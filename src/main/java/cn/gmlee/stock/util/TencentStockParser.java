@@ -1,8 +1,8 @@
 package cn.gmlee.stock.util;
 
+import cn.gmlee.tools.base.util.TimeUtil;
 import lombok.Data;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,18 +58,10 @@ public class TencentStockParser {
             stock.setVolumeRatio(Double.parseDouble(fields[7]));  // 量比
             stock.setTurnoverRate(Double.parseDouble(fields[38]));// 换手率
             stock.setPriceChangeSpeed(Double.parseDouble(fields[41])); // 涨速
-            stock.setTimestamp(parseTimestamp(fields[30]));
+            stock.setTimestamp(TimeUtil.parseTime(fields[30]));
 
             stockList.add(stock);
         }
         return stockList;
-    }
-
-    private static Date parseTimestamp(String timestamp) {
-        try {
-            return new SimpleDateFormat("yyyyMMddHHmmss").parse(timestamp);
-        } catch (Exception e) {
-            return null;
-        }
     }
 }
