@@ -29,30 +29,30 @@ public class TencentStockParser {
             Stock stock = new Stock();
             stock.setName(fields[1]); // 名称
             stock.setCode(fields[2]); // 代码
-            stock.setCurrentPrice(Double.parseDouble(fields[3])); // 价格
-            stock.setPreviousClose(Double.parseDouble(fields[4])); // 昨收
-            stock.setOpenPrice(Double.parseDouble(fields[5])); // 今开
-            stock.setHighestPrice(Double.parseDouble(fields[41])); // 最高价
-            stock.setLowestPrice(Double.parseDouble(fields[42])); // 最低价
-            stock.setAvgPrice(Double.parseDouble(fields[51])); // 均价
-            stock.setAmplitude(Double.parseDouble(fields[43])); // 振幅
-            stock.setUpperPrice(Double.parseDouble(fields[47])); // 涨停价
-            stock.setLowerPrice(Double.parseDouble(fields[48]));// 跌停价
-            stock.setVolumeRatio(Double.parseDouble(fields[49])); // 量比
-            stock.setTurnoverRate(Double.parseDouble(fields[38]));// 换手率
-            stock.setRiseRate(Double.parseDouble(fields[83])); // 涨速
-            stock.setVolume(Long.parseLong(fields[36])); // 成量 (手)
-            stock.setTurnover(Long.parseLong(fields[37])); // 成额 (万)
-            stock.setSellVolume(Long.parseLong(fields[8])); // 卖盘 (元)
-            stock.setBuyVolume(Long.parseLong(fields[7])); // 买盘 (元)
-            stock.setTcRatio(Double.parseDouble(fields[74])); // 委比
-            stock.setPeRatio(Double.parseDouble(fields[52])); // 市盈(动)
-            stock.setPbRatio(Double.parseDouble(fields[46])); // 市净
-            stock.setDyRatio(Double.parseDouble(fields[64])); // 股息
-            stock.setMcTotal(Double.parseDouble(fields[45])); // 市值
-            stock.setMcCirculate(Double.parseDouble(fields[44])); // 流通
-            stock.setTopYear(Double.parseDouble(fields[67])); // 年顶
-            stock.setBottomYear(Double.parseDouble(fields[68])); // 年底
+            stock.setCurrentPrice(fields[3]); // 价格
+            stock.setPreviousClose(fields[4]); // 昨收
+            stock.setOpenPrice(fields[5]); // 今开
+            stock.setHighestPrice(fields[41]); // 最高价
+            stock.setLowestPrice(fields[42]); // 最低价
+            stock.setAvgPrice(fields[51]); // 均价
+            stock.setAmplitude(fields[43]); // 振幅
+            stock.setUpperPrice(fields[47]); // 涨停价
+            stock.setLowerPrice(fields[48]);// 跌停价
+            stock.setVolumeRatio(fields[49]); // 量比
+            stock.setTurnoverRate(fields[38]);// 换手率
+            stock.setRiseRate(fields[83]); // 涨速
+            stock.setVolume(fields[36]); // 成量 (手)
+            stock.setTurnover(fields[37]); // 成额 (万)
+            stock.setSellVolume(fields[8]); // 卖盘 (元)
+            stock.setBuyVolume(fields[7]); // 买盘 (元)
+            stock.setTcRatio(fields[74]); // 委比
+            stock.setPeRatio(fields[52]); // 市盈(动)
+            stock.setPbRatio(fields[46]); // 市净
+            stock.setDyRatio(fields[64]); // 股息
+            stock.setMcTotal(fields[45]); // 市值
+            stock.setMcCirculate(fields[44]); // 流通
+            stock.setTopYear(fields[67]); // 年顶
+            stock.setBottomYear(fields[68]); // 年底
             stock.setTimestamp(fields[30]); // 时间
 
             stockList.add(stock);
