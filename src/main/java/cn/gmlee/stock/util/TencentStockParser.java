@@ -1,10 +1,8 @@
 package cn.gmlee.stock.util;
 
-import cn.gmlee.tools.base.util.TimeUtil;
 import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,12 +36,12 @@ public class TencentStockParser {
         private double amplitude;      // 振幅
         private double volumeRatio;    // 量比
         private double turnoverRate;   // 换手
-        private double priceChangeSpeed; // 涨速
+        private double riseRate;       // 涨速
         private double mcTotal;         // 市值
         private double mcCirculate;     // 流通
         private double topYear;         // 年高
         private double bottomYear;      // 年低
-        private Date timestamp;         // 时间
+        private String timestamp;         // 时间
     }
 
     public static List<StockInfo> parse(String response) {
@@ -73,7 +71,7 @@ public class TencentStockParser {
             stock.setLowerPrice(Double.parseDouble(fields[48]));// 跌停价
             stock.setVolumeRatio(Double.parseDouble(fields[49])); // 量比
             stock.setTurnoverRate(Double.parseDouble(fields[38]));// 换手率
-            stock.setPriceChangeSpeed(Double.parseDouble(fields[83])); // 涨速
+            stock.setRiseRate(Double.parseDouble(fields[83])); // 涨速
             stock.setVolume(Long.parseLong(fields[36])); // 成量 (手)
             stock.setTurnover(Long.parseLong(fields[37])); // 成额 (万)
             stock.setSellVolume(Long.parseLong(fields[8])); // 卖盘 (元)
@@ -86,7 +84,7 @@ public class TencentStockParser {
             stock.setMcCirculate(Double.parseDouble(fields[44])); // 流通
             stock.setTopYear(Double.parseDouble(fields[67])); // 年顶
             stock.setBottomYear(Double.parseDouble(fields[68])); // 年底
-            stock.setTimestamp(TimeUtil.parseTime(fields[30])); // 时间
+            stock.setTimestamp(fields[30]); // 时间
 
             stockList.add(stock);
         }

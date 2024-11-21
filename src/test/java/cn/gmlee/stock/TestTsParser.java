@@ -36,7 +36,7 @@ public class TestTsParser {
             System.out.println("跌停: " + stock.getLowerPrice());
             System.out.println("量比: " + stock.getVolumeRatio());
             System.out.println("换手: " + stock.getTurnoverRate());
-            System.out.println("涨速: " + stock.getPriceChangeSpeed());
+            System.out.println("涨速: " + stock.getRiseRate());
             System.out.println("成量: " + stock.getVolume());
             System.out.println("成额: " + stock.getTurnover());
             System.out.println("卖盘: " + stock.getSellVolume());
@@ -49,7 +49,7 @@ public class TestTsParser {
             System.out.println("流通: " + stock.getMcCirculate());
             System.out.println("年顶: " + stock.getTopYear());
             System.out.println("年底: " + stock.getBottomYear());
-            System.out.println("时间: " + TimeUtil.format(stock.getTimestamp(), XTime.SECOND_MINUS_BLANK_COLON));
+            System.out.println("时间: " + stock.getTimestamp());
         }
     }
 }
