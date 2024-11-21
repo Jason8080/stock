@@ -54,6 +54,11 @@ public class TencentStockParser {
 
             String data = entry.split("=")[1].replace("\"", "");
             String[] fields = data.split("~");
+
+//            for(int i=0; i<fields.length; i++){
+//                System.out.println(String.format("[%s]: %s", i, fields[i]));
+//            }
+
             StockInfo stock = new StockInfo();
             stock.setName(fields[1]); // 名称
             stock.setCode(fields[2]); // 代码
@@ -68,7 +73,7 @@ public class TencentStockParser {
             stock.setLowerPrice(Double.parseDouble(fields[48]));// 跌停价
             stock.setVolumeRatio(Double.parseDouble(fields[49])); // 量比
             stock.setTurnoverRate(Double.parseDouble(fields[38]));// 换手率
-            stock.setPriceChangeSpeed(Double.parseDouble(fields[41])); // 涨速
+            stock.setPriceChangeSpeed(Double.parseDouble(fields[83])); // 涨速
             stock.setVolume(Long.parseLong(fields[36])); // 成量 (手)
             stock.setTurnover(Long.parseLong(fields[37])); // 成额 (万)
             stock.setSellVolume(Long.parseLong(fields[8])); // 卖盘 (元)

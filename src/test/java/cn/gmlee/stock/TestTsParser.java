@@ -19,7 +19,7 @@ public class TestTsParser {
      * @param args the input arguments
      */
     public static void main(String[] args) {
-        HttpResult httpResult = HttpUtil.get("https://qt.gtimg.cn/q=sz300059,sz002008");
+        HttpResult httpResult = HttpUtil.get("https://qt.gtimg.cn/q=sz300059");
         String response = httpResult.byteResponseBody2String("GBK");
         List<TencentStockParser.StockInfo> stockList = TencentStockParser.parse(response);
         for (TencentStockParser.StockInfo stock : stockList) {
