@@ -1,10 +1,9 @@
 package cn.gmlee.stock;
 
+import cn.gmlee.stock.mod.Stock;
 import cn.gmlee.stock.util.TencentStockParser;
-import cn.gmlee.tools.base.enums.XTime;
 import cn.gmlee.tools.base.mod.HttpResult;
 import cn.gmlee.tools.base.util.HttpUtil;
-import cn.gmlee.tools.base.util.TimeUtil;
 
 import java.util.List;
 
@@ -21,8 +20,8 @@ public class TestTsParser {
     public static void main(String[] args) {
         HttpResult httpResult = HttpUtil.get("https://qt.gtimg.cn/q=sz300059");
         String response = httpResult.byteResponseBody2String("GBK");
-        List<TencentStockParser.StockInfo> stockList = TencentStockParser.parse(response);
-        for (TencentStockParser.StockInfo stock : stockList) {
+        List<Stock> stockList = TencentStockParser.parse(response);
+        for (Stock stock : stockList) {
             System.out.println("代码: " + stock.getCode());
             System.out.println("名称: " + stock.getName());
             System.out.println("价格: " + stock.getCurrentPrice());
