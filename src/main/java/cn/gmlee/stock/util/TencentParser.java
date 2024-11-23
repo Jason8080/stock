@@ -1,6 +1,7 @@
 package cn.gmlee.stock.util;
 
 import cn.gmlee.stock.mod.Stock;
+import cn.gmlee.tools.base.util.BoolUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,10 @@ public class TencentParser {
 
             String data = entry.split("=")[1].replace("\"", "");
             String[] fields = data.split("~");
+
+            if(fields.length < 87){
+                continue;
+            }
 
 //            for(int i=0; i<fields.length; i++){
 //                System.out.println(String.format("[%s]: %s", i, fields[i]));
