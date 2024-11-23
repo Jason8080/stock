@@ -1,6 +1,7 @@
 package cn.gmlee.tasks;
 
 import cn.gmlee.stock.server.StockServer;
+import cn.gmlee.stock.server.StrategyServer;
 import cn.gmlee.tools.base.util.BoolUtil;
 import cn.gmlee.tools.base.util.NullUtil;
 import cn.gmlee.tools.ds.dynamic.DynamicDataSourceHolder;
@@ -17,6 +18,7 @@ import javax.annotation.PostConstruct;
 public class StockTaskAutoConfiguration {
 
     private final StockServer stockServer;
+    private final StrategyServer strategyServer;
 
     private String db = System.getProperty("db");
 
@@ -58,7 +60,7 @@ public class StockTaskAutoConfiguration {
             log.warn("当前持久化采用的是: {}", db);
             DynamicDataSourceHolder.set(db);
         }
-        stockServer.dealHandle();
+        strategyServer.dealHandle();
     }
 
     /**
@@ -70,6 +72,6 @@ public class StockTaskAutoConfiguration {
             log.warn("当前持久化采用的是: {}", db);
             DynamicDataSourceHolder.set(db);
         }
-        stockServer.dealInform();
+        strategyServer.dealInform();
     }
 }
