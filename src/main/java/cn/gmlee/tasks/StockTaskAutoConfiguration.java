@@ -1,6 +1,7 @@
 package cn.gmlee.tasks;
 
 import cn.gmlee.stock.dao.entity.StockList;
+import cn.gmlee.stock.server.StockServer;
 import cn.gmlee.stock.service.StockListService;
 import cn.gmlee.stock.util.ByKit;
 import cn.gmlee.tools.base.util.LocalDateTimeUtil;
@@ -19,28 +20,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StockTaskAutoConfiguration {
 
-    private final StockListService stockListService;
+    private final StockServer stockServer;
 
     /**
      * 更新股票列表
      */
     @Scheduled(cron = "0 0 0 * * 6")
     public void stockUpdate(){
-        List<StockList> list = stockListService.list(Wrappers.<StockList>lambdaQuery()
-                .gt(StockList::getTimestamp, LocalDateTimeUtil.offsetCurrent(-1, ChronoUnit.MONTHS)));
-        if(list.size() > 0){
-            return;
-        }
-        List<StockList> entities = ByKit.getStockLists();
-        stockListService.saveBatch(entities);
+        stockServer.stockUpdate();
     }
 
     /**
      * 行情数据保存
      */
+    @PostConstruct
     @Scheduled(cron = "0 0 17 ? * 1-5")
-    public void marketSave() {
-        System.out.println("现在时间是：" + TimeUtil.getCurrentDatetime());
+    public void marketPull() {
+        stockServer.marketPull();
     }
 
     /**
@@ -48,6 +44,5 @@ public class StockTaskAutoConfiguration {
      */
     @Scheduled(cron = "0 55 14 ? * 1-5")
     public void priceMonitor() {
-        System.out.println("现在时间是：" + TimeUtil.getCurrentDatetime());
     }
 }

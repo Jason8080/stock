@@ -1,7 +1,7 @@
 package cn.gmlee.stock;
 
 import cn.gmlee.stock.mod.Stock;
-import cn.gmlee.stock.util.TencentStockParser;
+import cn.gmlee.stock.util.TencentParser;
 import cn.gmlee.tools.base.mod.HttpResult;
 import cn.gmlee.tools.base.util.ClassUtil;
 import cn.gmlee.tools.base.util.HttpUtil;
@@ -20,7 +20,7 @@ public class TestTsParser {
     public static void main(String[] args) {
         HttpResult httpResult = HttpUtil.get("https://qt.gtimg.cn/q=sz300059");
         String response = httpResult.byteResponseBody2String("GBK");
-        List<Stock> stockList = TencentStockParser.parse(response);
+        List<Stock> stockList = TencentParser.parse(response);
         for (Stock stock : stockList) {
             System.out.println(ClassUtil.generateCurrentMap(stock));
         }
