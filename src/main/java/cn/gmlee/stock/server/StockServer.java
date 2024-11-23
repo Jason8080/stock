@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class StockServer {
+    private final StrategyServer strategyServer;
     private final Stock2024Service stock2024Service;
     private final StockListService stockListService;
     private final StockToStockYear stockToStockYear;
@@ -50,5 +51,20 @@ public class StockServer {
         List<List<Stock>> lists = QuickUtil.batch(all, 100, (Function.P2r<List<StockList>, List<Stock>>) TencentKit::getStocks);
         List<Stock2024> entities = lists.stream().flatMap(List::stream).map(stockToStockYear::toEntity).collect(Collectors.toList());
         stock2024Service.saveOrUpdateBatch(entities);
+    }
+
+    /**
+     * Deal handle.
+     */
+    public void dealHandle() {
+
+
+    }
+
+    /**
+     * Deal inform.
+     */
+    public void dealInform() {
+
     }
 }

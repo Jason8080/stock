@@ -28,9 +28,18 @@ public class StockTaskAutoConfiguration {
     }
 
     /**
-     * 价格策略监控
+     * 交易策略处理
+     */
+    @Scheduled(cron = "0 0 18 ? * 1-5")
+    public void dealHandle() {
+        stockServer.dealHandle();
+    }
+
+    /**
+     * 交易策略通知
      */
     @Scheduled(cron = "0 55 14 ? * 1-5")
-    public void priceMonitor() {
+    public void dealInform() {
+        stockServer.dealInform();
     }
 }
