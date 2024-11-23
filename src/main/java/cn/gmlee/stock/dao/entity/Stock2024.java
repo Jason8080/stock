@@ -1,15 +1,14 @@
 package cn.gmlee.stock.dao.entity;
 
-import java.math.BigDecimal;
-
 import cn.gmlee.tools.base.enums.XTime;
 import cn.gmlee.tools.base.util.TimeUtil;
 import com.baomidou.mybatisplus.annotation.*;
-
-import java.util.Date;
-import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * <p>
@@ -28,7 +27,7 @@ public class Stock2024 implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.INPUT)
-    private String date = TimeUtil.getCurrentDatetime(XTime.DAY_NONE);
+    private String date;
 
     @TableField
     private String code;
@@ -85,5 +84,7 @@ public class Stock2024 implements Serializable {
 
     private Date timestamp;
 
-
+    public String getDate() {
+        return TimeUtil.format(timestamp, XTime.DAY_NONE);
+    }
 }
