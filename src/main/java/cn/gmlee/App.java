@@ -27,15 +27,16 @@ public class App {
         SpringApplication.run(App.class, args);
         new Thread(() -> {
             Scanner scanner = new Scanner(System.in);
-            String content = "请输入指令: ";
+            String content = "应用启动成功: 你好!";
             System.out.println(content);
             while (!"exit".equals(content = scanner.nextLine())) {
                 ConsoleServer consoleServer = IocUtil.getBean(ConsoleServer.class);
                 if (consoleServer != null) {
                     consoleServer.handle(content);
                 }
-                System.out.println("请输入指令: ");
+                System.out.print("请输入指令: ");
             }
+            System.out.println("收到退出指令: 再见!");
         }).start();
     }
 }
