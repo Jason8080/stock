@@ -1,6 +1,6 @@
 package cn.gmlee.stock.dao.mapper;
 
-import cn.gmlee.stock.dao.entity.Stock;
+import cn.gmlee.stock.dao.entity.Stock2024;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author Jas°
  * @since 2024-11-23
  */
-public interface StockMapper extends BaseMapper<Stock> {
+public interface Stock2024Mapper extends BaseMapper<Stock2024> {
 
 }

@@ -1,6 +1,6 @@
 package cn.gmlee.stock.service;
 
-import cn.gmlee.stock.dao.entity.Stock;
+import cn.gmlee.stock.dao.entity.Stock2024;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,5 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author Jas°
  * @since 2024-11-23
  */
-public interface StockService extends IService<Stock> {
+public interface Stock2024Service extends IService<Stock2024> {
 }
