@@ -2,6 +2,8 @@ package cn.gmlee.stock.dao.entity;
 
 import java.math.BigDecimal;
 
+import cn.gmlee.tools.base.enums.XTime;
+import cn.gmlee.tools.base.util.TimeUtil;
 import com.baomidou.mybatisplus.annotation.*;
 
 import java.util.Date;
@@ -26,7 +28,7 @@ public class Stock2024 implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.INPUT)
-    private String date;
+    private String date = TimeUtil.getCurrentDatetime(XTime.DAY_NONE);
 
     @TableField
     private String code;

@@ -42,16 +42,6 @@ public abstract class StockToStockYear {
     }
 
     /**
-     * Get date string.
-     *
-     * @param timestamp the timestamp
-     * @return the string
-     */
-    public String getDate(String timestamp){
-        return TimeUtil.getCurrentDatetime(XTime.DAY_NONE);
-    }
-
-    /**
      * To entity stock 2024.
      *
      * @param stock the stock
