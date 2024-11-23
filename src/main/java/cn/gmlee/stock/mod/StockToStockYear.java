@@ -2,13 +2,9 @@ package cn.gmlee.stock.mod;
 
 
 import cn.gmlee.stock.dao.entity.Stock2024;
-import cn.gmlee.tools.base.enums.XTime;
 import cn.gmlee.tools.base.util.BoolUtil;
 import cn.gmlee.tools.base.util.TimeUtil;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.NullValueCheckStrategy;
-import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -40,13 +36,12 @@ public abstract class StockToStockYear {
         }
         return new BigDecimal(value);
     }
-
+    
     /**
      * To entity stock 2024.
      *
      * @param stock the stock
      * @return the stock 2024
      */
-    @Mapping(target = "date", expression = "java(getDate(stock.getTimestamp()))")
     public abstract Stock2024 toEntity(Stock stock);
 }
