@@ -36,7 +36,7 @@ public abstract class StockToStockYear {
         }
         return new BigDecimal(value);
     }
-    
+
     /**
      * To entity stock 2024.
      *
