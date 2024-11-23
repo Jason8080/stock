@@ -60,6 +60,6 @@ public abstract class StockToStockYear {
      * @param stock the stock
      * @return the stock 2024
      */
-    @Mapping(target = "date", expression = "java(getDate(source.getTimestamp()))")
+    @Mapping(target = "date", expression = "java(getDate(stock.getTimestamp()))")
     public abstract Stock2024 toEntity(Stock stock);
 }
