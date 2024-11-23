@@ -1,11 +1,13 @@
 package cn.gmlee;
 
+import cn.gmlee.stock.server.ConsoleServer;
 import cn.gmlee.tools.ds.config.druid.DruidMonitorAutoConfiguration;
-import org.mybatis.spring.annotation.MapperScan;
+import cn.gmlee.tools.spring.util.IocUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.util.Scanner;
 
 /**
  * The type App.
@@ -23,5 +25,17 @@ public class App {
      */
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
+        new Thread(() -> {
+            Scanner scanner = new Scanner(System.in);
+            String content = "请输入指令: ";
+            System.out.println(content);
+            while (!"exit".equals(content = scanner.nextLine())) {
+                ConsoleServer consoleServer = IocUtil.getBean(ConsoleServer.class);
+                if (consoleServer != null) {
+                    consoleServer.handle(content);
+                }
+                System.out.println("请输入指令: ");
+            }
+        }).start();
     }
 }
