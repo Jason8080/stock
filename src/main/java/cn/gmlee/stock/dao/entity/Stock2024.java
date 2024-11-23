@@ -1,7 +1,9 @@
 package cn.gmlee.stock.dao.entity;
 
 import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.TableName;
+
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.util.Date;
 import java.io.Serializable;
 import lombok.Data;
@@ -18,12 +20,15 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("stock_2024")
+@KeySequence("SEQ_STOCK")
 public class Stock2024 implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @TableId(type = IdType.INPUT)
     private String date;
 
+    @TableField
     private String code;
 
     private String name;
