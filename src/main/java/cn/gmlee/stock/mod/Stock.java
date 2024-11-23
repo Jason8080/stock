@@ -6,9 +6,6 @@ import lombok.Data;
 
 @Data
 public class Stock {
-    @Column("日期")
-    
-    private String date;
     @Column("代码")
     
     private String code;
