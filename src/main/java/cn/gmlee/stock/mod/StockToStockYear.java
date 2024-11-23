@@ -48,10 +48,7 @@ public abstract class StockToStockYear {
      * @return the string
      */
     public String getDate(String timestamp){
-        if(BoolUtil.isEmpty(timestamp.trim())){
-            return TimeUtil.getCurrentDatetime(XTime.MINUTE_NONE);
-        }
-        return timestamp.substring(0, 8);
+        return TimeUtil.getCurrentDatetime(XTime.DAY_NONE);
     }
 
     /**
