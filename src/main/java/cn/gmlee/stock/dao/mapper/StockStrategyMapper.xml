@@ -8,13 +8,14 @@
         <result column="name" property="name" />
         <result column="author" property="author" />
         <result column="v" property="v" />
+        <result column="remark" property="remark" />
         <result column="status" property="status" />
         <result column="created_at" property="createdAt" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, author, v, status, created_at
+        id, name, author, v, remark, status, created_at
     </sql>
 
 </mapper>

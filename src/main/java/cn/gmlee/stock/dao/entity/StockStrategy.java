@@ -29,6 +29,8 @@ public class StockStrategy implements Serializable {
 
     private Integer v;
 
+    private String remark;
+
     private Integer status;
 
     private Date createdAt;
