@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.gmlee.stock.dao.mapper.StockStrategyDealMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.gmlee.stock.dao.entity.StockStrategyDeal">
+        <id column="id" property="id" />
+        <result column="strategy_id" property="strategyId" />
+        <result column="code" property="code" />
+        <result column="name" property="name" />
+        <result column="buy_price" property="buyPrice" />
+        <result column="buy_date" property="buyDate" />
+        <result column="sell_price" property="sellPrice" />
+        <result column="sell_date" property="sellDate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, strategy_id, code, name, buy_price, buy_date, sell_price, sell_date
+    </sql>
+
+</mapper>
