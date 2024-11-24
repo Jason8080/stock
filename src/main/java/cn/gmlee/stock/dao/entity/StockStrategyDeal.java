@@ -29,7 +29,7 @@ public class StockStrategyDeal implements Serializable {
      * 买入日期
      */
     @TableId(type = IdType.INPUT)
-    private String date;
+    private Date date;
 
     @TableField
     private String code;
