@@ -37,8 +37,10 @@ public class StrategyServer {
 
     /**
      * Deal handle.
+     *
+     * @return
      */
-    public void dealHandle() {
+    public boolean dealHandle() {
         // 策略数据准备
         List<StockStrategy> list = stockStrategyService.list(Wrappers.<StockStrategy>lambdaQuery()
                 .eq(StockStrategy::getStatus, 1)
@@ -54,6 +56,7 @@ public class StrategyServer {
         Map<String, StockStrategyDeal> dealMap = deals.stream().collect(Collectors.toMap(x -> String.format("%s_%s", x.getStrategyId(), x.getCode()), Function.identity(), (k1, k2) -> k1));
         // 单个策略处理
         strategyMap.forEach((k, v) -> ExceptionUtil.sandbox(() -> strategyHandlerOne(v, strategyMap, dealMap)));
+        return true;
     }
 
     private void strategyHandlerOne(StockStrategy strategy, Map<Integer, StockStrategy> strategyMap, Map<String, StockStrategyDeal> dealMap) {
@@ -61,6 +64,9 @@ public class StrategyServer {
                 .in(StockStrategyRule::getStrategyId, strategyMap.keySet())
                 .eq(StockStrategyRule::getStatus, true)
         );
+        if (BoolUtil.isEmpty(rules)) {
+            return;
+        }
         Map<Integer, List<StockStrategyRule>> ruleMap = rules.stream().collect(Collectors.groupingBy(StockStrategyRule::getTransType));
         // 买入规则准备
         List<StockStrategyRule> buyRule = ruleMap.get(1);
@@ -73,6 +79,9 @@ public class StrategyServer {
         LambdaQueryWrapper<Stock2024> qw = Wrappers.<Stock2024>lambdaQuery()
                 .between(Stock2024::getDate, LocalDateTimeUtil.momentCurrent(LocalTime.MIN), LocalDateTimeUtil.momentCurrent(LocalTime.MAX));
         PageUtil.nextPage(() -> stock2024Service.page(new Page<>(1, 1000), qw), (List<Stock2024> stock2024s) -> {
+            if (BoolUtil.isEmpty(stock2024s)) {
+                return;
+            }
             List<StockStrategyDeal> dealLis = stock2024s.stream().map(
                     x -> ExceptionUtil.sandbox(() -> deal(x, dealMap, strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule))
             ).filter(Objects::nonNull).collect(Collectors.toList());
