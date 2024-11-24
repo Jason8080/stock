@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.gmlee.stock.conf.dao.mapper.CustomCreateMysqlTablesMapper">
 	<!-- 抽取出来的公共部分 -->
-	<sql id="commonSql">
+	<sql id="customCommonSql">
 		<if test="fields.fileTypeLength == 0">
 			`${fields.fieldName}` ${fields.fieldType}
 		</if>
@@ -91,7 +91,7 @@
 		<foreach collection="tableMap" index="key" item="value">
 			create table `${key}`(
 			<foreach collection="value.list" item="fields" separator=",">
-				<include refid="commonSql"></include>
+				<include refid="customCommonSql"></include>
 			</foreach>
 			<foreach collection="value.list" item="fields" open=",PRIMARY KEY(" separator="," close=")">
 				<if test="fields.fieldIsKey">
