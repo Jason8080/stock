@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ConsoleServer {
 
+    private final StockServer stockServer;
+
     private final StrategyServer strategyServer;
 
     /**
@@ -26,6 +28,7 @@ public class ConsoleServer {
         }
         log.warn("检测到输入内容: {}", content);
         switch (content){
+            case "pull": return stockServer.marketPull();
             case "deal": return strategyServer.dealHandle();
         }
         return false;

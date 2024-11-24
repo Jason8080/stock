@@ -44,11 +44,14 @@ public class StockServer {
 
     /**
      * Market pull.
+     *
+     * @return
      */
-    public void marketPull() {
+    public boolean marketPull() {
         List<StockList> all = stockListService.list();
         List<List<Stock>> lists = QuickUtil.batch(all, 100, (Function.P2r<List<StockList>, List<Stock>>) TencentKit::getStocks);
         List<Stock2024> entities = lists.stream().flatMap(List::stream).map(stockToStockYear::toEntity).collect(Collectors.toList());
         stock2024Service.saveOrUpdateBatch(entities);
+        return true;
     }
 }
