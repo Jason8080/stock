@@ -4,19 +4,18 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="cn.gmlee.stock.dao.entity.StockStrategyDeal">
-        <id column="id" property="id" />
-        <result column="strategy_id" property="strategyId" />
+        <id column="date" property="date" />
         <result column="code" property="code" />
         <result column="name" property="name" />
-        <result column="buy_price" property="buyPrice" />
-        <result column="buy_date" property="buyDate" />
+        <result column="price" property="price" />
         <result column="sell_price" property="sellPrice" />
         <result column="sell_date" property="sellDate" />
+        <result column="strategy_id" property="strategyId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, strategy_id, code, name, buy_price, buy_date, sell_price, sell_date
+        date, code, name, price, sell_price, sell_date, strategy_id
     </sql>
 
 </mapper>
