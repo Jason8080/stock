@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.util.Date;
 import java.io.Serializable;
+
+import com.gitee.sunchenbin.mybatis.actable.annotation.Column;
+import com.gitee.sunchenbin.mybatis.actable.annotation.IsKey;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -28,23 +31,30 @@ public class StockStrategyDeal implements Serializable {
     /**
      * 买入日期
      */
+    @IsKey
     @TableId(type = IdType.INPUT)
     private Date date;
 
+    @IsKey
     @TableField
     private String code;
 
+    @Column
     private String name;
 
+    @Column
     private BigDecimal price;
 
+    @Column
     private BigDecimal sellPrice;
 
     /**
      * 卖出日期
      */
+    @Column
     private Date sellDate;
 
+    @Column
     private Integer strategyId;
 
 
