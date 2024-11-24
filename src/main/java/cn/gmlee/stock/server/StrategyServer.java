@@ -51,6 +51,9 @@ public class StrategyServer {
                 .eq(StockStrategy::getStatus, 1)
         );
         Map<Integer, StockStrategy> strategyMap = list.stream().collect(Collectors.toMap(StockStrategy::getId, Function.identity()));
+        if(BoolUtil.isEmpty(strategyMap)){
+            return false;
+        }
         // 持仓数据准备
         List<StockStrategyDeal> deals = stockStrategyDealService.list(Wrappers.<StockStrategyDeal>lambdaQuery()
                 .in(StockStrategyDeal::getStrategyId, strategyMap.keySet())

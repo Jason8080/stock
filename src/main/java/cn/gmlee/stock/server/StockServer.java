@@ -31,15 +31,18 @@ public class StockServer {
 
     /**
      * Stock update.
+     *
+     * @return
      */
-    public void stockUpdate() {
+    public boolean stockUpdate() {
         List<StockList> list = stockListService.list(Wrappers.<StockList>lambdaQuery()
                 .gt(StockList::getTimestamp, LocalDateTimeUtil.offsetCurrent(-1, ChronoUnit.MONTHS)));
         if(list.size() > 0){
-            return;
+            return false;
         }
         List<StockList> entities = ByKit.getStockLists();
         stockListService.saveBatch(entities);
+        return true;
     }
 
     /**
