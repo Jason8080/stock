@@ -4,6 +4,7 @@ import cn.gmlee.stock.mod.Stock;
 import cn.gmlee.tools.base.util.BigDecimalUtil;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 /**
@@ -31,6 +32,6 @@ public class CustomVariableKit {
         BigDecimal xc = BigDecimalUtil.subtract(stock.getHighestPrice(), stock.getLowestPrice()); // 线长
         BigDecimal sx = BigDecimalUtil.divide(zc, xc); // 实长
         BigDecimal result = BigDecimalUtil.multiply(sx, 100).abs();
-        stockMap.put("实心", result.setScale(2));
+        stockMap.put("实心", result.setScale(2, RoundingMode.HALF_UP));
     }
 }
