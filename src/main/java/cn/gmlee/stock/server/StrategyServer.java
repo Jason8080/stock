@@ -11,7 +11,6 @@ import cn.gmlee.stock.service.StockStrategyDealService;
 import cn.gmlee.stock.service.StockStrategyRuleService;
 import cn.gmlee.stock.service.StockStrategyService;
 import cn.gmlee.stock.util.CustomVariableKit;
-import cn.gmlee.tools.base.enums.XTime;
 import cn.gmlee.tools.base.util.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -19,8 +18,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalTime;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -77,7 +78,6 @@ public class StrategyServer {
         List<StockStrategyRule> sellRule = ruleMap.get(-1);
         List<StockStrategyRule> excludeSellRule = ruleMap.get(-2);
         // 股票数据准备
-        List<StockStrategyDeal> entities = new ArrayList<>();
         LambdaQueryWrapper<Stock2024> qw = Wrappers.<Stock2024>lambdaQuery()
                 .eq(Stock2024::getDate, TimeUtil.getCurrentDatetime( XTime.DAY_NONE));
         PageUtil.nextPage(() -> stock2024Service.page(new Page<>(1, 1000), qw), (List<Stock2024> stock2024s) -> {
@@ -87,8 +87,9 @@ public class StrategyServer {
             List<StockStrategyDeal> dealLis = stock2024s.stream().map(
                     x -> ExceptionUtil.sandbox(() -> deal(x, dealMap, strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule))
             ).filter(Objects::nonNull).collect(Collectors.toList());
-            entities.addAll(dealLis);
+            stockStrategyDealService.saveOrUpdateBatch(dealLis);
         });
+
     }
 
     /**
