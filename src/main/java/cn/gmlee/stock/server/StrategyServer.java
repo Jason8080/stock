@@ -184,8 +184,11 @@ public class StrategyServer {
 
     /**
      * Deal inform.
+     *
+     * @return
      */
-    public void dealInform() {
+    public boolean dealInform() {
 
+        return true;
     }
 }

@@ -43,7 +43,11 @@ public class ConsoleServer {
 
     private boolean other(String content) {
         if(isStock(content)){
-            strategyServer.dealInform();
+            return strategyServer.dealInform();
+        }
+        if(BoolUtil.isDigit(content)){
+            System.out.println("你想查股票吗?请输入正确的股票代码!");
+            return false;
         }
         return true;
     }
