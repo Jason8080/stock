@@ -86,7 +86,7 @@ public class StrategyServer {
         IPage<Stock2024> page = new Page<>(1, 1000);
         LambdaQueryWrapper<Stock2024> qw = Wrappers.<Stock2024>lambdaQuery()
                 .eq(Stock2024::getDate, TimeUtil.getCurrentDatetime(XTime.DAY_NONE));
-        PageUtil.nextPage(() -> stock2024Service.page(new Page<>(1, 1000), qw), (List<Stock2024> stock2024s) -> {
+        PageUtil.nextPage(() -> stock2024Service.page(page, qw), (List<Stock2024> stock2024s) -> {
             if (BoolUtil.isEmpty(stock2024s)) {
                 return;
             }
