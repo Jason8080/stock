@@ -10,6 +10,7 @@ import cn.gmlee.stock.service.Stock2024Service;
 import cn.gmlee.stock.service.StockStrategyDealService;
 import cn.gmlee.stock.service.StockStrategyRuleService;
 import cn.gmlee.stock.service.StockStrategyService;
+import cn.gmlee.stock.util.CustomVariableKit;
 import cn.gmlee.tools.base.util.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -108,6 +109,7 @@ public class StrategyServer {
     ) {
         Stock stock = stockToStockYear.toObject(stock2024);
         Map<String, Object> stockMap = ClassUtil.generateCurrentMap(stock);
+        CustomVariableKit.add(stock, stockMap);
         StockStrategyDeal deal = dealMap.get(stock2024.getCode());// 可能没有持仓: null
         // 交易规则 and 关系、(排除)交易规则 or 关系
         boolean buy = isDeal(stockMap, buyRule, excludeBuyRule);
