@@ -13,6 +13,7 @@ import cn.gmlee.stock.service.StockStrategyService;
 import cn.gmlee.stock.util.CustomVariableKit;
 import cn.gmlee.tools.base.util.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -78,6 +79,7 @@ public class StrategyServer {
         List<StockStrategyRule> sellRule = ruleMap.get(-1);
         List<StockStrategyRule> excludeSellRule = ruleMap.get(-2);
         // 股票数据准备
+        IPage<Stock2024> page = new Page<>(1, 1000);
         LambdaQueryWrapper<Stock2024> qw = Wrappers.<Stock2024>lambdaQuery()
                 .eq(Stock2024::getDate, TimeUtil.getCurrentDatetime( XTime.DAY_NONE));
         PageUtil.nextPage(() -> stock2024Service.page(new Page<>(1, 1000), qw), (List<Stock2024> stock2024s) -> {
