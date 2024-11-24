@@ -26,7 +26,7 @@ public class ConsoleServer {
         }
         log.warn("检测到输入内容: {}", content);
         switch (content){
-            case "dealHandle": return strategyServer.dealHandle();
+            case "deal": return strategyServer.dealHandle();
         }
         return false;
     }
