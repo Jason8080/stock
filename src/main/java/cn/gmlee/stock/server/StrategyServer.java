@@ -139,7 +139,7 @@ public class StrategyServer {
     }
 
     private boolean isDeal(Map<String, Object> stockMap, List<StockStrategyRule> rules, List<StockStrategyRule> excludeRules) {
-        for (StockStrategyRule rule : rules) {
+        for (StockStrategyRule rule : NullUtil.get(rules)) {
             String javascript = substitutionVariable(rule.getRule(), stockMap);
             Object eval = ScriptUtil.eval(javascript, true);
             if (!(eval instanceof Boolean)) { // 非布尔值结果规则忽略
@@ -149,7 +149,7 @@ public class StrategyServer {
                 return false;
             }
         }
-        for (StockStrategyRule rule : excludeRules) {
+        for (StockStrategyRule rule : NullUtil.get(excludeRules)) {
             String javascript = substitutionVariable(rule.getRule(), stockMap);
             Object eval = ScriptUtil.eval(javascript, true);
             if (!(eval instanceof Boolean)) { // 非布尔值结果规则忽略
