@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.gmlee.stock.conf.dao.mapper.CustomCreateMysqlTablesMapper">
+	<!-- 抽取出来的公共部分 -->
+	<sql id="commonSql">
+		<if test="fields.fileTypeLength == 0">
+			`${fields.fieldName}` ${fields.fieldType}
+		</if>
+		<if test="fields.fileTypeLength == 1">
+			`${fields.fieldName}` ${fields.fieldType}(${fields.fieldLength})
+		</if>
+		<if test="fields.fileTypeLength == 2">
+			`${fields.fieldName}`
+			${fields.fieldType}(${fields.fieldLength},${fields.fieldDecimalLength})
+		</if>
+		<if test="fields.fieldIsNull">
+			NULL
+		</if>
+		<if test="!fields.fieldIsNull">
+			NOT NULL
+		</if>
+		<if test="fields.fieldIsAutoIncrement">
+			AUTO_INCREMENT
+		</if>
+		<!-- 不是自增长的才能有默认值 -->
+		<!-- 并且不为null时，因为null是默认的没必要写 -->
+		<if test="!fields.fieldIsAutoIncrement and !fields.fieldIsNull and fields.fieldDefaultValue != null">
+			<if test="fields.fieldType == 'bit' and !fields.fieldDefaultValueNative">
+				<if test="fields.fieldDefaultValue == 'true'.toString()">
+					DEFAULT 1
+				</if>
+				<if test="fields.fieldDefaultValue == 'false'.toString()">
+					DEFAULT 0
+				</if>
+				<if test="fields.fieldDefaultValue == '1'.toString()">
+					DEFAULT 1
+				</if>
+				<if test="fields.fieldDefaultValue == '0'.toString()">
+					DEFAULT 0
+				</if>
+			</if>
+			<if test="fields.fieldType == 'bit' and fields.fieldDefaultValueNative">
+				DEFAULT ${fields.fieldDefaultValue}
+			</if>
+			<if test="fields.fieldType != 'bit'">
+				<if test="fields.fieldDefaultValueNative">
+					DEFAULT ${fields.fieldDefaultValue}
+				</if>
+				<if test="!fields.fieldDefaultValueNative">
+					DEFAULT #{fields.fieldDefaultValue}
+				</if>
+			</if>
+		</if>
+		<!-- 不是自增长的才能有默认值 -->
+		<!-- 允许是空时，并且默认值不是NUll -->
+		<if test="!fields.fieldIsAutoIncrement and fields.fieldIsNull and fields.fieldDefaultValue != null">
+			<if test="fields.fieldType == 'bit' and !fields.fieldDefaultValueNative">
+				<if test="fields.fieldDefaultValue == 'true'.toString()">
+					DEFAULT 1
+				</if>
+				<if test="fields.fieldDefaultValue == 'false'.toString()">
+					DEFAULT 0
+				</if>
+				<if test="fields.fieldDefaultValue == '1'.toString()">
+					DEFAULT 1
+				</if>
+				<if test="fields.fieldDefaultValue == '0'.toString()">
+					DEFAULT 0
+				</if>
+			</if>
+			<if test="fields.fieldType == 'bit' and fields.fieldDefaultValueNative">
+				DEFAULT ${fields.fieldDefaultValue}
+			</if>
+			<if test="fields.fieldType != 'bit'">
+				<if test="fields.fieldDefaultValueNative">
+					DEFAULT ${fields.fieldDefaultValue}
+				</if>
+				<if test="!fields.fieldDefaultValueNative">
+					DEFAULT #{fields.fieldDefaultValue}
+				</if>
+			</if>
+		</if>
+		<if test="fields.fieldComment != ''">
+			COMMENT #{fields.fieldComment}
+		</if>
+	</sql>
+
+	<!-- 创建表的 -->
+	<select id="createTable" parameterType="java.util.Map">
+
+		<foreach collection="tableMap" index="key" item="value">
+			create table `${key}`(
+			<foreach collection="value.list" item="fields" separator=",">
+				<include refid="commonSql"></include>
+			</foreach>
+			<foreach collection="value.list" item="fields" open=",PRIMARY KEY(" separator="," close=")">
+				<if test="fields.fieldIsKey">
+					`${fields.fieldName}`
+				</if>
+			</foreach>
+			)
+			<foreach collection="value.map" index="ckey" item="cvalue">
+				<if test="ckey == 'table_comment'">
+					COMMENT = #{cvalue}
+				</if>
+				<if test="ckey == 'table_collation'">
+					CHARSET = #{cvalue}
+				</if>
+				<if test="ckey == 'engine'">
+					ENGINE = #{cvalue}
+				</if>
+			</foreach>
+			;
+		</foreach>
+
+	</select>
+</mapper>
