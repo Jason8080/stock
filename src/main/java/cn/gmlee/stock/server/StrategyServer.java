@@ -11,6 +11,7 @@ import cn.gmlee.stock.service.StockStrategyDealService;
 import cn.gmlee.stock.service.StockStrategyRuleService;
 import cn.gmlee.stock.service.StockStrategyService;
 import cn.gmlee.stock.util.CustomVariableKit;
+import cn.gmlee.tools.base.enums.XTime;
 import cn.gmlee.tools.base.util.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -78,7 +79,7 @@ public class StrategyServer {
         // 股票数据准备
         List<StockStrategyDeal> entities = new ArrayList<>();
         LambdaQueryWrapper<Stock2024> qw = Wrappers.<Stock2024>lambdaQuery()
-                .between(Stock2024::getDate, LocalDateTimeUtil.momentCurrent(LocalTime.MIN), LocalDateTimeUtil.momentCurrent(LocalTime.MAX));
+                .eq(Stock2024::getDate, TimeUtil.getCurrentDatetime( XTime.DAY_NONE));
         PageUtil.nextPage(() -> stock2024Service.page(new Page<>(1, 1000), qw), (List<Stock2024> stock2024s) -> {
             if (BoolUtil.isEmpty(stock2024s)) {
                 return;
