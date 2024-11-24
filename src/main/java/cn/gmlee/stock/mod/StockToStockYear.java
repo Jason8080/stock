@@ -31,7 +31,7 @@ public abstract class StockToStockYear {
      * @return the big decimal
      */
     public BigDecimal stringToBigDecimal(String value) {
-        if(BoolUtil.isEmpty(value.trim())){
+        if (BoolUtil.isEmpty(value.trim())) {
             return null;
         }
         return new BigDecimal(value);
@@ -44,4 +44,12 @@ public abstract class StockToStockYear {
      * @return the stock 2024
      */
     public abstract Stock2024 toEntity(Stock stock);
+
+    /**
+     * To object stock.
+     *
+     * @param stock2024 the stock 2024
+     * @return the stock
+     */
+    public abstract Stock toObject(Stock2024 stock2024);
 }
