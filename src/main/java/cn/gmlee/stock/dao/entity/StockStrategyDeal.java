@@ -54,6 +54,7 @@ public class StockStrategyDeal implements Serializable {
     @Column
     private Date sellDate;
 
+    @IsKey
     @TableField
     private Integer strategyId;
 }
