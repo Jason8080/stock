@@ -2,6 +2,7 @@ package cn.gmlee.stock.util;
 
 import cn.gmlee.tools.base.builder.KvBuilder;
 import cn.gmlee.tools.base.mod.HttpResult;
+import cn.gmlee.tools.base.mod.Kv;
 import cn.gmlee.tools.base.util.AssertUtil;
 import cn.gmlee.tools.base.util.HttpUtil;
 import cn.gmlee.tools.base.util.JsonUtil;
@@ -29,7 +30,8 @@ public class FeiShuReader {
         String url = String.format(getMultiTableApi, "X1ZCbM4PBahKJhsQeWlczzFonzR", "tblRZ5sw6u4j1F7I");
         String body = "{  \"view_id\": \"%s\",  \"field_names\": [    \"股票代码\",    \"提交人\"  ],  \"filter\": {    \"conjunction\": \"and\",    \"conditions\": [      {        \"field_name\": \"是否缴费\",        \"operator\": \"is\",        \"value\": [          \"true\"        ]      }    ]  },  \"automatic_fields\": false}";
         Map map = JsonUtil.toBean(String.format(body, "vewECJ0Fv2"), Map.class);
-        HttpResult httpResult = HttpUtil.post(url, map, KvBuilder.array("Authorization", FeiShuKit.getToken()));
+        Kv<String, String>[] headers = KvBuilder.array("Authorization", FeiShuKit.getToken());
+        HttpResult httpResult = HttpUtil.post(url, map, headers);
         AssertUtil.isTrue(httpResult.isOk(), String.format("获取用户订阅异常: %s", httpResult.byteResponseBody2String()));
         Map resultMap = httpResult.jsonResponseBody2bean(Map.class);
         Object code = resultMap.get("code");
