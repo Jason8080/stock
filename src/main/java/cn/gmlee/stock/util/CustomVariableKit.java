@@ -30,6 +30,7 @@ public class CustomVariableKit {
         BigDecimal zc = BigDecimalUtil.subtract(stock.getCurrentPrice(), stock.getOpenPrice()); // 柱长
         BigDecimal xc = BigDecimalUtil.subtract(stock.getHighestPrice(), stock.getLowestPrice()); // 线长
         BigDecimal sx = BigDecimalUtil.divide(zc, xc); // 实长
-        stockMap.put("实心", BigDecimalUtil.multiply(sx, 100).setScale(2));
+        BigDecimal result = BigDecimalUtil.multiply(sx, 100).abs();
+        stockMap.put("实心", result.setScale(2));
     }
 }
