@@ -30,7 +30,8 @@ public class FeiShuReader {
         String url = String.format(getMultiTableApi, "X1ZCbM4PBahKJhsQeWlczzFonzR", "tblRZ5sw6u4j1F7I");
         String body = "{  \"view_id\": \"%s\",  \"field_names\": [    \"股票代码\",    \"提交人\"  ],  \"filter\": {    \"conjunction\": \"and\",    \"conditions\": [      {        \"field_name\": \"是否缴费\",        \"operator\": \"is\",        \"value\": [          \"true\"        ]      }    ]  },  \"automatic_fields\": false}";
         Map map = JsonUtil.toBean(String.format(body, "vewECJ0Fv2"), Map.class);
-        Kv<String, String>[] headers = KvBuilder.array("Authorization", FeiShuKit.getToken());
+        String token = FeiShuKit.getToken();
+        Kv<String, String>[] headers = KvBuilder.array("Authorization", "Bearer ".concat(token));
         HttpResult httpResult = HttpUtil.post(url, map, headers);
         AssertUtil.isTrue(httpResult.isOk(), String.format("获取用户订阅异常: %s", httpResult.byteResponseBody2String()));
         Map resultMap = httpResult.jsonResponseBody2bean(Map.class);
