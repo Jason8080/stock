@@ -125,7 +125,7 @@ public class StrategyServer {
         if (deal == null && buy) {
             StockStrategyDeal entity = new StockStrategyDeal();
             entity.setStrategyId(strategy.getId());
-            entity.setDate(TimeUtil.parseTime(stock2024.getDate()));
+            entity.setDate(stock2024.getDate());
             entity.setCode(stock2024.getCode());
             entity.setName(stock2024.getName());
             entity.setPrice(stock2024.getCurrentPrice());
@@ -139,7 +139,7 @@ public class StrategyServer {
             entity.setDate(deal.getDate());
             entity.setCode(deal.getCode());
             entity.setSellPrice(stock2024.getCurrentPrice());
-            entity.setSellDate(TimeUtil.parseTime(stock2024.getDate()));
+            entity.setSellDate(stock2024.getDate());
             return entity;
         }
         return null;

@@ -33,7 +33,7 @@ public class StockStrategyDeal implements Serializable {
      */
     @IsKey
     @TableId(type = IdType.INPUT)
-    private Date date;
+    private String date;
 
     @IsKey
     @TableField
@@ -52,7 +52,7 @@ public class StockStrategyDeal implements Serializable {
      * 卖出日期
      */
     @Column
-    private Date sellDate;
+    private String sellDate;
 
     @IsKey
     @TableField
