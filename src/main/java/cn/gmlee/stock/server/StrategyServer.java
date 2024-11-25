@@ -1,9 +1,6 @@
 package cn.gmlee.stock.server;
 
-import cn.gmlee.stock.dao.entity.Stock2024;
-import cn.gmlee.stock.dao.entity.StockStrategy;
-import cn.gmlee.stock.dao.entity.StockStrategyDeal;
-import cn.gmlee.stock.dao.entity.StockStrategyRule;
+import cn.gmlee.stock.dao.entity.*;
 import cn.gmlee.stock.mod.Stock;
 import cn.gmlee.stock.mod.StockToStockYear;
 import cn.gmlee.stock.service.Stock2024Service;
@@ -11,6 +8,9 @@ import cn.gmlee.stock.service.StockStrategyDealService;
 import cn.gmlee.stock.service.StockStrategyRuleService;
 import cn.gmlee.stock.service.StockStrategyService;
 import cn.gmlee.stock.util.CustomVariableKit;
+import cn.gmlee.stock.util.FeiShuReader;
+import cn.gmlee.stock.util.MarketKit;
+import cn.gmlee.stock.util.TencentKit;
 import cn.gmlee.tools.base.enums.XTime;
 import cn.gmlee.tools.base.util.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -188,6 +188,15 @@ public class StrategyServer {
      * @return
      */
     public boolean dealInform() {
+        // 获取订阅
+        Map<String, List<String>> subscribeMap = FeiShuReader.getSubscribeMap();
+        List<StockList> all = subscribeMap.values().stream().flatMap(List::stream)
+                .filter(BoolUtil::notEmpty).distinct().map(MarketKit::newStockList)
+                .collect(Collectors.toList());
+        // 查询行情
+        List<List<Stock>> lists = QuickUtil.batch(all, 100, (cn.gmlee.tools.base.enums.Function.P2r<List<StockList>, List<Stock>>) TencentKit::getStocks);
+        List<Stock2024> entities = lists.stream().flatMap(List::stream).map(stockToStockYear::toEntity).collect(Collectors.toList());
+        Map<String, Stock2024> codeMap = entities.stream().collect(Collectors.toMap(Stock2024::getCode, Function.identity()));
 
         return true;
     }
