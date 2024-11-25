@@ -7,10 +7,7 @@ import cn.gmlee.stock.service.Stock2024Service;
 import cn.gmlee.stock.service.StockStrategyDealService;
 import cn.gmlee.stock.service.StockStrategyRuleService;
 import cn.gmlee.stock.service.StockStrategyService;
-import cn.gmlee.stock.util.CustomVariableKit;
-import cn.gmlee.stock.util.FeiShuReader;
-import cn.gmlee.stock.util.MarketKit;
-import cn.gmlee.stock.util.TencentKit;
+import cn.gmlee.stock.util.*;
 import cn.gmlee.tools.base.enums.XTime;
 import cn.gmlee.tools.base.util.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -20,6 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -140,6 +138,7 @@ public class StrategyServer {
             entity.setCode(deal.getCode());
             entity.setSellPrice(stock2024.getCurrentPrice());
             entity.setSellDate(stock2024.getDate());
+            entity.setRiseRatio(RatioKit.calculate(deal.getPrice(), stock2024.getCurrentPrice()));
             return entity;
         }
         return null;
