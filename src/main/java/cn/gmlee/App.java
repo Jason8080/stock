@@ -1,6 +1,7 @@
 package cn.gmlee;
 
 import cn.gmlee.stock.server.ConsoleServer;
+import cn.gmlee.tools.base.util.ExceptionUtil;
 import cn.gmlee.tools.ds.config.druid.DruidMonitorAutoConfiguration;
 import cn.gmlee.tools.spring.util.IocUtil;
 import cn.gmlee.util.SysKit;
@@ -37,7 +38,11 @@ public class App {
                 }
                 ConsoleServer consoleServer = IocUtil.getBean(ConsoleServer.class);
                 if (consoleServer != null) {
-                    consoleServer.handle(content);
+                    try {
+                        consoleServer.handle(content);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 System.out.print("请输入指令: ");
             }
