@@ -58,6 +58,9 @@ public class Stock2024 implements Serializable {
     private BigDecimal avgPrice;
 
     @Column
+    private String riseRatio;
+
+    @Column
     private BigDecimal upperPrice;
 
     @Column

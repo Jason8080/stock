@@ -22,6 +22,8 @@ public class Stock {
     private String lowestPrice;
     @Column("均价")
     private String avgPrice;
+    @Column("涨幅")
+    private String riseRatio;
     @Column("涨停")
     private String upperPrice;
     @Column("跌停")

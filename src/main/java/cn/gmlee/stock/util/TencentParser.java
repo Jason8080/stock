@@ -39,6 +39,7 @@ public class TencentParser {
             stock.setHighestPrice(fields[41]); // 最高价
             stock.setLowestPrice(fields[42]); // 最低价
             stock.setAvgPrice(fields[51]); // 均价
+            stock.setRiseRatio(fields[32]); // 涨幅
             stock.setAmplitude(fields[43]); // 振幅
             stock.setUpperPrice(fields[47]); // 涨停价
             stock.setLowerPrice(fields[48]);// 跌停价
