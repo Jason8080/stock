@@ -17,16 +17,17 @@
     <sql id="Base_Column_List">
         date, code, name, price, sell_price, sell_date, strategy_id
     </sql>
-    <insert id="insertOrUpdateBatch" parameterType="list">
+
+    <insert id="insertOrUpdateBatch">
         INSERT INTO stock_strategy_deal (
         `date`, `code`, `name`, `price`, `sell_price`,
         `sell_date`, `rise_ratio`, `strategy_id`
         )
         VALUES
-        <foreach collection="entities" item="item" separator=",">
+        <foreach collection="list" item="item" separator=",">
             (
-            #{item.date}, #{item.code}, #{item.name}, #{item.price}, #{item.sell_price},
-            #{item.sell_date}, #{item.rise_ratio}, #{item.strategy_id}
+            #{item.date}, #{item.code}, #{item.name}, #{item.price}, #{item.sellPrice},
+            #{item.sellDate}, #{item.riseRatio}, #{item.strategyId}
             )
         </foreach>
         ON DUPLICATE KEY UPDATE

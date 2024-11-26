@@ -49,14 +49,14 @@
         `mc_total`, `mc_circulate`, `top_year`, `bottom_year`, `timestamp`
         )
         VALUES
-        <foreach collection="entities" item="item" separator=",">
+        <foreach collection="list" item="item" separator=",">
             (
-            #{item.date}, #{item.code}, #{item.name}, #{item.current_price}, #{item.previous_close},
-            #{item.open_price}, #{item.highest_price}, #{item.lowest_price}, #{item.avg_price},
-            #{item.rise_ratio}, #{item.upper_price}, #{item.lower_price}, #{item.volume}, #{item.turnover},
-            #{item.sell_volume}, #{item.buy_volume}, #{item.tc_ratio}, #{item.pe_ratio}, #{item.pb_ratio},
-            #{item.dy_ratio}, #{item.amplitude}, #{item.volume_ratio}, #{item.turnover_rate}, #{item.rise_rate},
-            #{item.mc_total}, #{item.mc_circulate}, #{item.top_year}, #{item.bottom_year}, #{item.timestamp}
+            #{item.date}, #{item.code}, #{item.name}, #{item.currentPrice}, #{item.previousClose},
+            #{item.openPrice}, #{item.highestPrice}, #{item.lowestPrice}, #{item.avgPrice},
+            #{item.riseRatio}, #{item.upperPrice}, #{item.lowerPrice}, #{item.volume}, #{item.turnover},
+            #{item.sellVolume}, #{item.buyVolume}, #{item.tcRatio}, #{item.peRatio}, #{item.pbRatio},
+            #{item.dyRatio}, #{item.amplitude}, #{item.volumeRatio}, #{item.turnoverRate}, #{item.riseRate},
+            #{item.mcTotal}, #{item.mcCirculate}, #{item.topYear}, #{item.bottomYear}, #{item.timestamp}
             )
         </foreach>
         ON DUPLICATE KEY UPDATE
