@@ -21,6 +21,14 @@ public class FeiShuSender {
     private static String sendMessagesApi = "https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=user_id";
 
     @Data
+    public static class Body {
+        private String receive_id;
+        private String msg_type = "interactive";
+        private Template content = new Template();
+    }
+
+
+    @Data
     public static class Template {
         private String type = "template";
         private Variable data = new Variable();
@@ -35,14 +43,19 @@ public class FeiShuSender {
     /**
      * 发送消息
      */
-    public static void send(Map... maps) {
+    public static void send(String uid, Map... maps) {
         if (BoolUtil.isEmpty(maps)) {
             return;
         }
         String token = FeiShuKit.getToken();
         Kv<String, String>[] headers = KvBuilder.array("Authorization", "Bearer ".concat(token));
         Arrays.stream(maps).filter(BoolUtil::notEmpty).forEach(map -> {
-            HttpResult httpResult = HttpUtil.post(sendMessagesApi, map, headers);
+            Body body = new Body();
+            body.setReceive_id(uid);
+            Template template = body.getContent();
+            Variable variable = template.getData();
+            variable.setTemplate_variable(map);
+            HttpResult httpResult = HttpUtil.post(sendMessagesApi, body, headers);
             log.info(httpResult.byteResponseBody2String());
         });
     }
