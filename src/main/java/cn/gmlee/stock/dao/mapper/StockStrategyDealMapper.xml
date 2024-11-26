@@ -24,7 +24,7 @@
         `sell_date`, `rise_ratio`, `strategy_id`
         )
         VALUES
-        <foreach collection="list" item="item" separator=",">
+        <foreach collection="entities" item="item" separator=",">
             (
             #{item.date}, #{item.code}, #{item.name}, #{item.price}, #{item.sellPrice},
             #{item.sellDate}, #{item.riseRatio}, #{item.strategyId}
