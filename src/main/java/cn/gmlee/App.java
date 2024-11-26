@@ -3,6 +3,7 @@ package cn.gmlee;
 import cn.gmlee.stock.server.ConsoleServer;
 import cn.gmlee.tools.ds.config.druid.DruidMonitorAutoConfiguration;
 import cn.gmlee.tools.spring.util.IocUtil;
+import cn.gmlee.util.ConsoleKit;
 import cn.gmlee.util.SysKit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,16 +32,19 @@ public class App {
             String content = "应用启动成功: 你好!";
             System.out.println(content);
             while (!"exit".equals(content = scanner.nextLine())) {
-                if("clear".equals(content) || "cls".equals(content)){
+                if ("clear".equals(content) || "cls".equals(content)) {
                     SysKit.clear();
                     continue;
                 }
                 ConsoleServer consoleServer = IocUtil.getBean(ConsoleServer.class);
                 if (consoleServer != null) {
                     try {
+                        ConsoleKit.put(new ConsoleKit.Obj(content));
                         consoleServer.handle(content);
                     } catch (Exception e) {
                         e.printStackTrace();
+                    } finally {
+                        ConsoleKit.remove();
                     }
                 }
                 System.out.print("请输入指令: ");

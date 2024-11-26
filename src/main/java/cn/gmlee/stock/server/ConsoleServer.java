@@ -23,14 +23,19 @@ public class ConsoleServer {
      * @param content the content
      */
     public boolean handle(String content) {
-        switch (content){
-            case "":
-            case "help": return help(content);
-            case "list": return stockServer.stockUpdate();
-            case "pull": return stockServer.marketPull();
-            case "deal": return strategyServer.dealHandle();
-            default: return other(content);
+        if (content.startsWith("help")) {
+            return help(content);
         }
+        if (content.startsWith("list")) {
+            return stockServer.stockUpdate();
+        }
+        if (content.startsWith("pull")) {
+            return stockServer.marketPull();
+        }
+        if (content.startsWith("deal")) {
+            return strategyServer.dealHandle();
+        }
+        return other(content);
     }
 
     private boolean help(String content) {
@@ -42,10 +47,7 @@ public class ConsoleServer {
     }
 
     private boolean other(String content) {
-        if(isStock(content)){
-            return strategyServer.dealInform();
-        }
-        if(BoolUtil.isDigit(content)){
+        if (BoolUtil.isDigit(content)) {
             System.out.println("你想查股票吗?请输入正确的股票代码!");
             return false;
         }

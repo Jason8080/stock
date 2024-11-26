@@ -10,6 +10,7 @@ import cn.gmlee.stock.service.StockStrategyService;
 import cn.gmlee.stock.util.*;
 import cn.gmlee.tools.base.enums.XTime;
 import cn.gmlee.tools.base.util.*;
+import cn.gmlee.util.ConsoleKit;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -43,20 +44,13 @@ public class StrategyServer {
     public boolean dealHandle() {
         // 策略数据准备
         List<StockStrategy> list = stockStrategyService.list(Wrappers.<StockStrategy>lambdaQuery()
+                .eq(BoolUtil.notEmpty(ConsoleKit.getStrategyId()), StockStrategy::getId, ConsoleKit.getStrategyId())
                 .eq(StockStrategy::getStatus, 1)
         );
         Map<Integer, StockStrategy> strategyMap = list.stream().collect(Collectors.toMap(StockStrategy::getId, Function.identity()));
         if (BoolUtil.isEmpty(strategyMap)) {
             return false;
         }
-        // 持仓数据准备
-        List<StockStrategyDeal> deals = stockStrategyDealService.list(Wrappers.<StockStrategyDeal>lambdaQuery()
-                .in(StockStrategyDeal::getStrategyId, strategyMap.keySet())
-                .isNull(StockStrategyDeal::getSellPrice)
-                .isNull(StockStrategyDeal::getSellDate)
-                .orderByAsc(StockStrategyDeal::getDate)
-        );
-        Map<String, StockStrategyDeal> dealMap = deals.stream().collect(Collectors.toMap(x -> String.format("%s_%s", x.getStrategyId(), x.getCode()), Function.identity(), (k1, k2) -> k1));
         // 策略规则准备
         List<StockStrategyRule> rules = stockStrategyRuleService.list(Wrappers.<StockStrategyRule>lambdaQuery()
                 .in(StockStrategyRule::getStrategyId, strategyMap.keySet())
@@ -64,7 +58,7 @@ public class StrategyServer {
         );
         Map<Integer, List<StockStrategyRule>> ruleMap = rules.stream().collect(Collectors.groupingBy(StockStrategyRule::getStrategyId));
         // 单个策略处理
-        strategyMap.forEach((k, v) -> ExceptionUtil.sandbox(() -> strategyHandlerOne(v, ruleMap, dealMap)));
+        strategyMap.forEach((k, v) -> ExceptionUtil.sandbox(() -> strategyHandlerOne(v, ruleMap)));
         return true;
     }
 
@@ -108,6 +102,8 @@ public class StrategyServer {
             entity.setStrategyId(strategy.getId());
             entity.setDate(deal.getDate());
             entity.setCode(deal.getCode());
+            entity.setName(deal.getName());
+            entity.setPrice(deal.getPrice());
             entity.setSellPrice(stock2024.getCurrentPrice());
             entity.setSellDate(stock2024.getDate());
             entity.setRiseRatio(RatioKit.calculate(deal.getPrice(), stock2024.getCurrentPrice()));
@@ -187,8 +183,8 @@ public class StrategyServer {
         return true;
     }
 
-    private void strategyHandlerOne(StockStrategy strategy, Map<Integer, List<StockStrategyRule>> ruleMap, Map<String, StockStrategyDeal> dealMap) {
-        if (BoolUtil.isEmpty(ruleMap) || BoolUtil.isEmpty(dealMap) || BoolUtil.isEmpty(ruleMap.get(strategy.getId()))) {
+    private void strategyHandlerOne(StockStrategy strategy, Map<Integer, List<StockStrategyRule>> ruleMap) {
+        if (BoolUtil.isEmpty(ruleMap) || BoolUtil.isEmpty(ruleMap.get(strategy.getId()))) {
             return;
         }
         List<StockStrategyRule> rules = ruleMap.get(strategy.getId());
@@ -202,11 +198,21 @@ public class StrategyServer {
         // 股票数据准备
         IPage<Stock2024> page = new Page<>(1, 1000);
         LambdaQueryWrapper<Stock2024> qw = Wrappers.<Stock2024>lambdaQuery()
-                .eq(Stock2024::getDate, TimeUtil.getCurrentDatetime(XTime.DAY_NONE));
+                .eq(BoolUtil.isEmpty(ConsoleKit.getStrategyId()), Stock2024::getDate, TimeUtil.getCurrentDatetime(XTime.DAY_NONE))
+                .orderByAsc(Stock2024::getDate);
         PageUtil.nextPage(() -> stock2024Service.page(page, qw), (List<Stock2024> stock2024s) -> {
             if (BoolUtil.isEmpty(stock2024s)) {
                 return;
             }
+            // 持仓数据准备
+            List<StockStrategyDeal> deals = stockStrategyDealService.list(Wrappers.<StockStrategyDeal>lambdaQuery()
+                    .in(StockStrategyDeal::getStrategyId, strategy.getId())
+                    .isNull(StockStrategyDeal::getSellPrice)
+                    .isNull(StockStrategyDeal::getSellDate)
+                    .orderByAsc(StockStrategyDeal::getDate)
+            );
+            Map<String, StockStrategyDeal> dealMap = deals.stream().collect(Collectors.toMap(StockStrategyDeal::getCode, Function.identity(), (k1, k2) -> k1));
+            // 交易股票准备
             List<StockStrategyDeal> dealLis = stock2024s.stream().map(
                     x -> ExceptionUtil.sandbox(() -> deal(x, dealMap, strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule))
             ).filter(Objects::nonNull).collect(Collectors.toList());

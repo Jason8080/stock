@@ -19,7 +19,7 @@ public class RatioKit {
     public static BigDecimal calculate(Object oldPrice, Object newPrice) {
         BigDecimal subtract = BigDecimalUtil.subtract(newPrice, oldPrice);
         BigDecimal divide = BigDecimalUtil.divide(subtract, oldPrice);
-        BigDecimal result = BigDecimalUtil.multiply(divide, 100).abs();
+        BigDecimal result = BigDecimalUtil.multiply(divide, 100);
         return result.setScale(2, RoundingMode.HALF_UP);
     }
 }
