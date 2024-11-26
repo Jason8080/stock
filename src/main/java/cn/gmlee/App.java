@@ -1,7 +1,6 @@
 package cn.gmlee;
 
 import cn.gmlee.stock.server.ConsoleServer;
-import cn.gmlee.tools.base.util.ExceptionUtil;
 import cn.gmlee.tools.ds.config.druid.DruidMonitorAutoConfiguration;
 import cn.gmlee.tools.spring.util.IocUtil;
 import cn.gmlee.util.SysKit;
