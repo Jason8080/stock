@@ -4,34 +4,34 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="cn.gmlee.stock.dao.entity.Stock2024">
-        <id column="date" property="date" />
-        <result column="code" property="code" />
-        <result column="name" property="name" />
-        <result column="current_price" property="currentPrice" />
-        <result column="previous_close" property="previousClose" />
-        <result column="open_price" property="openPrice" />
-        <result column="highest_price" property="highestPrice" />
-        <result column="lowest_price" property="lowestPrice" />
-        <result column="avg_price" property="avgPrice" />
-        <result column="upper_price" property="upperPrice" />
-        <result column="lower_price" property="lowerPrice" />
-        <result column="volume" property="volume" />
-        <result column="turnover" property="turnover" />
-        <result column="sell_volume" property="sellVolume" />
-        <result column="buy_volume" property="buyVolume" />
-        <result column="tc_ratio" property="tcRatio" />
-        <result column="pe_ratio" property="peRatio" />
-        <result column="pb_ratio" property="pbRatio" />
-        <result column="dy_ratio" property="dyRatio" />
-        <result column="amplitude" property="amplitude" />
-        <result column="volume_ratio" property="volumeRatio" />
-        <result column="turnover_rate" property="turnoverRate" />
-        <result column="rise_rate" property="riseRate" />
-        <result column="mc_total" property="mcTotal" />
-        <result column="mc_circulate" property="mcCirculate" />
-        <result column="top_year" property="topYear" />
-        <result column="bottom_year" property="bottomYear" />
-        <result column="timestamp" property="timestamp" />
+        <id column="date" property="date"/>
+        <result column="code" property="code"/>
+        <result column="name" property="name"/>
+        <result column="current_price" property="currentPrice"/>
+        <result column="previous_close" property="previousClose"/>
+        <result column="open_price" property="openPrice"/>
+        <result column="highest_price" property="highestPrice"/>
+        <result column="lowest_price" property="lowestPrice"/>
+        <result column="avg_price" property="avgPrice"/>
+        <result column="upper_price" property="upperPrice"/>
+        <result column="lower_price" property="lowerPrice"/>
+        <result column="volume" property="volume"/>
+        <result column="turnover" property="turnover"/>
+        <result column="sell_volume" property="sellVolume"/>
+        <result column="buy_volume" property="buyVolume"/>
+        <result column="tc_ratio" property="tcRatio"/>
+        <result column="pe_ratio" property="peRatio"/>
+        <result column="pb_ratio" property="pbRatio"/>
+        <result column="dy_ratio" property="dyRatio"/>
+        <result column="amplitude" property="amplitude"/>
+        <result column="volume_ratio" property="volumeRatio"/>
+        <result column="turnover_rate" property="turnoverRate"/>
+        <result column="rise_rate" property="riseRate"/>
+        <result column="mc_total" property="mcTotal"/>
+        <result column="mc_circulate" property="mcCirculate"/>
+        <result column="top_year" property="topYear"/>
+        <result column="bottom_year" property="bottomYear"/>
+        <result column="timestamp" property="timestamp"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -39,4 +39,53 @@
         date, code, name, current_price, previous_close, open_price, highest_price, lowest_price, avg_price, upper_price, lower_price, volume, turnover, sell_volume, buy_volume, tc_ratio, pe_ratio, pb_ratio, dy_ratio, amplitude, volume_ratio, turnover_rate, rise_rate, mc_total, mc_circulate, top_year, bottom_year, timestamp
     </sql>
 
+    <insert id="insertOrUpdateBatch">
+        INSERT INTO stock_2024 (
+        `date`, `code`, `name`, `current_price`, `previous_close`,
+        `open_price`, `highest_price`, `lowest_price`, `avg_price`,
+        `rise_ratio`, `upper_price`, `lower_price`, `volume`, `turnover`,
+        `sell_volume`, `buy_volume`, `tc_ratio`, `pe_ratio`, `pb_ratio`,
+        `dy_ratio`, `amplitude`, `volume_ratio`, `turnover_rate`, `rise_rate`,
+        `mc_total`, `mc_circulate`, `top_year`, `bottom_year`, `timestamp`
+        )
+        VALUES
+        <foreach collection="entities" item="item" separator=",">
+            (
+            #{item.date}, #{item.code}, #{item.name}, #{item.current_price}, #{item.previous_close},
+            #{item.open_price}, #{item.highest_price}, #{item.lowest_price}, #{item.avg_price},
+            #{item.rise_ratio}, #{item.upper_price}, #{item.lower_price}, #{item.volume}, #{item.turnover},
+            #{item.sell_volume}, #{item.buy_volume}, #{item.tc_ratio}, #{item.pe_ratio}, #{item.pb_ratio},
+            #{item.dy_ratio}, #{item.amplitude}, #{item.volume_ratio}, #{item.turnover_rate}, #{item.rise_rate},
+            #{item.mc_total}, #{item.mc_circulate}, #{item.top_year}, #{item.bottom_year}, #{item.timestamp}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        `name` = VALUES(`name`),
+        `current_price` = VALUES(`current_price`),
+        `previous_close` = VALUES(`previous_close`),
+        `open_price` = VALUES(`open_price`),
+        `highest_price` = VALUES(`highest_price`),
+        `lowest_price` = VALUES(`lowest_price`),
+        `avg_price` = VALUES(`avg_price`),
+        `rise_ratio` = VALUES(`rise_ratio`),
+        `upper_price` = VALUES(`upper_price`),
+        `lower_price` = VALUES(`lower_price`),
+        `volume` = VALUES(`volume`),
+        `turnover` = VALUES(`turnover`),
+        `sell_volume` = VALUES(`sell_volume`),
+        `buy_volume` = VALUES(`buy_volume`),
+        `tc_ratio` = VALUES(`tc_ratio`),
+        `pe_ratio` = VALUES(`pe_ratio`),
+        `pb_ratio` = VALUES(`pb_ratio`),
+        `dy_ratio` = VALUES(`dy_ratio`),
+        `amplitude` = VALUES(`amplitude`),
+        `volume_ratio` = VALUES(`volume_ratio`),
+        `turnover_rate` = VALUES(`turnover_rate`),
+        `rise_rate` = VALUES(`rise_rate`),
+        `mc_total` = VALUES(`mc_total`),
+        `mc_circulate` = VALUES(`mc_circulate`),
+        `top_year` = VALUES(`top_year`),
+        `bottom_year` = VALUES(`bottom_year`),
+        `timestamp` = VALUES(`timestamp`);
+    </insert>
 </mapper>

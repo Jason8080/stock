@@ -91,7 +91,7 @@ public class StrategyServer {
             List<StockStrategyDeal> dealLis = stock2024s.stream().map(
                     x -> ExceptionUtil.sandbox(() -> deal(x, dealMap, strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule))
             ).filter(Objects::nonNull).collect(Collectors.toList());
-            stockStrategyDealService.saveOrUpdateBatch(dealLis);
+            stockStrategyDealService.insertOrUpdateBatch(dealLis);
         });
 
     }

@@ -6,6 +6,8 @@ import cn.gmlee.stock.service.StockStrategyDealService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务实现类
@@ -17,4 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class StockStrategyDealServiceImpl extends ServiceImpl<StockStrategyDealMapper, StockStrategyDeal> implements StockStrategyDealService {
 
+    @Override
+    public void insertOrUpdateBatch(List<StockStrategyDeal> entities) {
+        baseMapper.insertOrUpdateBatch(entities);
+    }
 }

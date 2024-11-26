@@ -4,18 +4,36 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="cn.gmlee.stock.dao.entity.StockStrategyDeal">
-        <id column="date" property="date" />
-        <result column="code" property="code" />
-        <result column="name" property="name" />
-        <result column="price" property="price" />
-        <result column="sell_price" property="sellPrice" />
-        <result column="sell_date" property="sellDate" />
-        <result column="strategy_id" property="strategyId" />
+        <id column="date" property="date"/>
+        <result column="code" property="code"/>
+        <result column="name" property="name"/>
+        <result column="price" property="price"/>
+        <result column="sell_price" property="sellPrice"/>
+        <result column="sell_date" property="sellDate"/>
+        <result column="strategy_id" property="strategyId"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         date, code, name, price, sell_price, sell_date, strategy_id
     </sql>
-
+    <insert id="insertOrUpdateBatch" parameterType="list">
+        INSERT INTO stock_strategy_deal (
+        `date`, `code`, `name`, `price`, `sell_price`,
+        `sell_date`, `rise_ratio`, `strategy_id`
+        )
+        VALUES
+        <foreach collection="entities" item="item" separator=",">
+            (
+            #{item.date}, #{item.code}, #{item.name}, #{item.price}, #{item.sell_price},
+            #{item.sell_date}, #{item.rise_ratio}, #{item.strategy_id}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        `name` = VALUES(`name`),
+        `price` = VALUES(`price`),
+        `sell_price` = VALUES(`sell_price`),
+        `sell_date` = VALUES(`sell_date`),
+        `rise_ratio` = VALUES(`rise_ratio`);
+    </insert>
 </mapper>
