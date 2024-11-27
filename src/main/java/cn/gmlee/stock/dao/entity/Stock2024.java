@@ -1,6 +1,7 @@
 package cn.gmlee.stock.dao.entity;
 
 import cn.gmlee.tools.base.enums.XTime;
+import cn.gmlee.tools.base.util.BoolUtil;
 import cn.gmlee.tools.base.util.TimeUtil;
 import com.baomidou.mybatisplus.annotation.*;
 import com.gitee.sunchenbin.mybatis.actable.annotation.Column;
@@ -118,6 +119,12 @@ public class Stock2024 implements Serializable {
     private Date timestamp;
 
     public String getDate() {
+        if(BoolUtil.notEmpty(date)){
+            return date;
+        }
+        if(timestamp == null){
+            return null;
+        }
         return TimeUtil.format(timestamp, XTime.DAY_NONE);
     }
 }

@@ -188,9 +188,9 @@ public class StrategyServer {
         return true;
     }
 
-    private void strategyHandlerOne(StockStrategy strategy, Map<Integer, List<StockStrategyRule>> ruleMap) {
+    private boolean strategyHandlerOne(StockStrategy strategy, Map<Integer, List<StockStrategyRule>> ruleMap) {
         if (BoolUtil.isEmpty(ruleMap) || BoolUtil.isEmpty(ruleMap.get(strategy.getId()))) {
-            return;
+            return false;
         }
         List<StockStrategyRule> rules = ruleMap.get(strategy.getId());
         Map<Integer, List<StockStrategyRule>> groupMap = rules.stream().collect(Collectors.groupingBy(StockStrategyRule::getTransType));
@@ -200,10 +200,20 @@ public class StrategyServer {
         // 卖出规则准备
         List<StockStrategyRule> sellRule = groupMap.get(-1);
         List<StockStrategyRule> excludeSellRule = groupMap.get(-2);
+        // 数据储备日期
+        List<Stock2024> list = stock2024Service.list(Wrappers.<Stock2024>lambdaQuery().select(Stock2024::getDate).groupBy(Stock2024::getDate));
+        if(BoolUtil.isEmpty(ConsoleKit.getStrategyId())){
+            return oneDayHandle(TimeUtil.getCurrentDatetime(XTime.DAY_NONE), strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule);
+        }
+        list.stream().map(Stock2024::getDate).filter(BoolUtil::notEmpty).forEach(date -> oneDayHandle(date, strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule));
+        return true;
+    }
+
+    private boolean oneDayHandle(String date, StockStrategy strategy, List<StockStrategyRule> buyRule, List<StockStrategyRule> excludeBuyRule, List<StockStrategyRule> sellRule, List<StockStrategyRule> excludeSellRule) {
         // 股票数据准备
         IPage<Stock2024> page = new Page<>(1, 1000);
         LambdaQueryWrapper<Stock2024> qw = Wrappers.<Stock2024>lambdaQuery()
-                .eq(BoolUtil.isEmpty(ConsoleKit.getStrategyId()), Stock2024::getDate, TimeUtil.getCurrentDatetime(XTime.DAY_NONE))
+                .eq(Stock2024::getDate, date)
                 .orderByAsc(Stock2024::getDate);
         PageUtil.nextPage(() -> stock2024Service.page(page, qw), (List<Stock2024> stock2024s) -> {
             if (BoolUtil.isEmpty(stock2024s)) {
@@ -212,8 +222,7 @@ public class StrategyServer {
             // 持仓数据准备
             List<StockStrategyDeal> deals = stockStrategyDealService.list(Wrappers.<StockStrategyDeal>lambdaQuery()
                     .in(StockStrategyDeal::getStrategyId, strategy.getId())
-                    .isNull(StockStrategyDeal::getSellPrice)
-                    .isNull(StockStrategyDeal::getSellDate)
+                    .isNull(StockStrategyDeal::getRiseRatio)
                     .orderByAsc(StockStrategyDeal::getDate)
             );
             Map<String, StockStrategyDeal> dealMap = deals.stream().collect(Collectors.toMap(StockStrategyDeal::getCode, Function.identity(), (k1, k2) -> k1));
@@ -223,7 +232,7 @@ public class StrategyServer {
             ).filter(Objects::nonNull).collect(Collectors.toList());
             stockStrategyDealService.insertOrUpdateBatch(dealLis);
         });
-
+        return true;
     }
 
     private void strategyHandlerOne(StockStrategy strategy, Map<Integer, List<StockStrategyRule>> ruleMap, Map<String, List<String>> subscribeMap, Map<String, Stock> codeMap) {
