@@ -39,7 +39,7 @@ public class StrategyServer {
     /**
      * Deal handle.
      *
-     * @return
+     * @return boolean
      */
     public boolean dealHandle() {
         // 策略数据准备
@@ -150,11 +150,11 @@ public class StrategyServer {
     }
 
     /**
-     * Deal inform.
+     * Send message boolean.
      *
-     * @return
+     * @return boolean
      */
-    public boolean dealInform() {
+    public boolean sendMessage() {
         // 策略数据准备
         List<StockStrategy> list = stockStrategyService.list(Wrappers.<StockStrategy>lambdaQuery()
                 .eq(StockStrategy::getStatus, 1)

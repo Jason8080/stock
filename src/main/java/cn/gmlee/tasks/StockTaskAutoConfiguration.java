@@ -64,14 +64,14 @@ public class StockTaskAutoConfiguration {
     }
 
     /**
-     * 交易策略通知
+     * 发送量化消息
      */
     @Scheduled(cron = "0 55 14 ? * 1-5")
-    public void dealInform() {
+    public void sendMessage() {
         if (BoolUtil.notEmpty(db)) {
             log.warn("当前持久化采用的是: {}", db);
             DynamicDataSourceHolder.set(db);
         }
-        strategyServer.dealInform();
+        strategyServer.sendMessage();
     }
 }
