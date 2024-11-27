@@ -57,6 +57,10 @@ public class StrategyServer {
                 .eq(StockStrategyRule::getStatus, true)
         );
         Map<Integer, List<StockStrategyRule>> ruleMap = rules.stream().collect(Collectors.groupingBy(StockStrategyRule::getStrategyId));
+        // 持仓数据清理
+        if(BoolUtil.notEmpty(ConsoleKit.getStrategyId())){
+            stockStrategyDealService.remove(Wrappers.<StockStrategyDeal>lambdaQuery().eq(StockStrategyDeal::getStrategyId, ConsoleKit.getStrategyId()));
+        }
         // 单个策略处理
         strategyMap.forEach((k, v) -> ExceptionUtil.sandbox(() -> strategyHandlerOne(v, ruleMap)));
         return true;
