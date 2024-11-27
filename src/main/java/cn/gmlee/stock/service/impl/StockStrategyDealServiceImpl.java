@@ -3,6 +3,7 @@ package cn.gmlee.stock.service.impl;
 import cn.gmlee.stock.dao.entity.StockStrategyDeal;
 import cn.gmlee.stock.dao.mapper.StockStrategyDealMapper;
 import cn.gmlee.stock.service.StockStrategyDealService;
+import cn.gmlee.tools.base.util.BoolUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author Jas°
@@ -21,6 +22,9 @@ public class StockStrategyDealServiceImpl extends ServiceImpl<StockStrategyDealM
 
     @Override
     public void insertOrUpdateBatch(List<StockStrategyDeal> entities) {
+        if (BoolUtil.isEmpty(entities)) {
+            return;
+        }
         baseMapper.insertOrUpdateBatch(entities);
     }
 }
