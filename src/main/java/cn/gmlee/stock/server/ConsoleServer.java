@@ -35,6 +35,9 @@ public class ConsoleServer {
         if (content.startsWith("deal")) {
             return strategyServer.dealHandle();
         }
+        if (content.startsWith("send")) {
+            return strategyServer.sendMessage();
+        }
         return other(content);
     }
 
