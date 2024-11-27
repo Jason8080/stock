@@ -5,6 +5,7 @@ import cn.gmlee.tools.base.mod.HttpResult;
 import cn.gmlee.tools.base.mod.Kv;
 import cn.gmlee.tools.base.util.BoolUtil;
 import cn.gmlee.tools.base.util.HttpUtil;
+import cn.gmlee.tools.base.util.JsonUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +25,7 @@ public class FeiShuSender {
     public static class Body {
         private String receive_id;
         private String msg_type = "interactive";
-        private Template content = new Template();
+        private String content;
     }
 
 
@@ -52,9 +53,10 @@ public class FeiShuSender {
         Arrays.stream(maps).filter(BoolUtil::notEmpty).forEach(map -> {
             Body body = new Body();
             body.setReceive_id(uid);
-            Template template = body.getContent();
+            Template template = new Template();
             Variable variable = template.getData();
             variable.setTemplate_variable(map);
+            body.setContent(JsonUtil.toJson(template));
             HttpResult httpResult = HttpUtil.post(sendMessagesApi, body, headers);
             log.info(httpResult.byteResponseBody2String());
         });
