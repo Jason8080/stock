@@ -249,7 +249,7 @@ public class StrategyServer {
         map.put("zjzf", "100");
         map.put("zjly", "100");
         map.put("zjyz", "100");
-        map.put("strategyName", strategy.getName());
+        map.put("strategyName", String.format("%sv%s", strategy.getName(), strategy.getV()));
         map.put("strategyAuthor", strategy.getAuthor());
         List<Map> list = subscribes.stream().map(code ->
                 ExceptionUtil.sandbox(() -> getVariablesMap(strategy, codeMap.get(code), buyRule, excludeBuyRule, sellRule, excludeSellRule))
