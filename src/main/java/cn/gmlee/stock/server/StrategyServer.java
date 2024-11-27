@@ -111,6 +111,7 @@ public class StrategyServer {
             entity.setSellPrice(stock2024.getCurrentPrice());
             entity.setSellDate(stock2024.getDate());
             entity.setRiseRatio(RatioKit.calculate(deal.getPrice(), stock2024.getCurrentPrice()));
+            entity.setDays((int) LocalDateTimeUtil.between(deal.getDate(), deal.getSellDate()).toDays());
             return entity;
         }
         return null;

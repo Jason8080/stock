@@ -57,6 +57,9 @@ public class StockStrategyDeal implements Serializable {
     @Column
     private BigDecimal riseRatio;
 
+    @Column
+    private Integer days;
+
     @IsKey
     @TableField
     private Integer strategyId;
