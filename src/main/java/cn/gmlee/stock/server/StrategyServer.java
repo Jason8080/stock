@@ -204,18 +204,18 @@ public class StrategyServer {
         LambdaQueryWrapper<Stock2024> qw = Wrappers.<Stock2024>lambdaQuery()
                 .eq(BoolUtil.isEmpty(ConsoleKit.getStrategyId()), Stock2024::getDate, TimeUtil.getCurrentDatetime(XTime.DAY_NONE))
                 .orderByAsc(Stock2024::getDate);
-        // 持仓数据准备
-        List<StockStrategyDeal> deals = stockStrategyDealService.list(Wrappers.<StockStrategyDeal>lambdaQuery()
-                .in(StockStrategyDeal::getStrategyId, strategy.getId())
-                .isNull(StockStrategyDeal::getSellPrice)
-                .isNull(StockStrategyDeal::getSellDate)
-                .orderByAsc(StockStrategyDeal::getDate)
-        );
-        Map<String, StockStrategyDeal> dealMap = deals.stream().collect(Collectors.toMap(StockStrategyDeal::getCode, Function.identity(), (k1, k2) -> k1));
         PageUtil.nextPage(() -> stock2024Service.page(page, qw), (List<Stock2024> stock2024s) -> {
             if (BoolUtil.isEmpty(stock2024s)) {
                 return;
             }
+            // 持仓数据准备
+            List<StockStrategyDeal> deals = stockStrategyDealService.list(Wrappers.<StockStrategyDeal>lambdaQuery()
+                    .in(StockStrategyDeal::getStrategyId, strategy.getId())
+                    .isNull(StockStrategyDeal::getSellPrice)
+                    .isNull(StockStrategyDeal::getSellDate)
+                    .orderByAsc(StockStrategyDeal::getDate)
+            );
+            Map<String, StockStrategyDeal> dealMap = deals.stream().collect(Collectors.toMap(StockStrategyDeal::getCode, Function.identity(), (k1, k2) -> k1));
             // 交易股票准备
             List<StockStrategyDeal> dealLis = stock2024s.stream().map(
                     x -> ExceptionUtil.sandbox(() -> deal(x, dealMap, strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule))
