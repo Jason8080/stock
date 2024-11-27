@@ -212,9 +212,7 @@ public class StrategyServer {
     private boolean oneDayHandle(String date, StockStrategy strategy, List<StockStrategyRule> buyRule, List<StockStrategyRule> excludeBuyRule, List<StockStrategyRule> sellRule, List<StockStrategyRule> excludeSellRule) {
         // 股票数据准备
         IPage<Stock2024> page = new Page<>(1, 1000);
-        LambdaQueryWrapper<Stock2024> qw = Wrappers.<Stock2024>lambdaQuery()
-                .eq(Stock2024::getDate, date)
-                .orderByAsc(Stock2024::getDate);
+        LambdaQueryWrapper<Stock2024> qw = Wrappers.<Stock2024>lambdaQuery().eq(Stock2024::getDate, date);
         PageUtil.nextPage(() -> stock2024Service.page(page, qw), (List<Stock2024> stock2024s) -> {
             if (BoolUtil.isEmpty(stock2024s)) {
                 return;
