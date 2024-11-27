@@ -21,13 +21,13 @@
     <insert id="insertOrUpdateBatch">
         INSERT INTO stock_strategy_deal (
         `date`, `code`, `name`, `price`, `sell_price`,
-        `sell_date`, `rise_ratio`, `strategy_id`
+        `sell_date`, `rise_ratio`, `days`, `strategy_id`
         )
         VALUES
         <foreach collection="entities" item="item" separator=",">
             (
             #{item.date}, #{item.code}, #{item.name}, #{item.price}, #{item.sellPrice},
-            #{item.sellDate}, #{item.riseRatio}, #{item.strategyId}
+            #{item.sellDate}, #{item.riseRatio}, #{item.days}, #{item.strategyId}
             )
         </foreach>
         ON DUPLICATE KEY UPDATE
@@ -35,6 +35,7 @@
         `price` = VALUES(`price`),
         `sell_price` = VALUES(`sell_price`),
         `sell_date` = VALUES(`sell_date`),
-        `rise_ratio` = VALUES(`rise_ratio`);
+        `rise_ratio` = VALUES(`rise_ratio`),
+        `days` = VALUES(`days`);
     </insert>
 </mapper>
