@@ -6,11 +6,9 @@ import cn.gmlee.tools.base.mod.Kv;
 import cn.gmlee.tools.base.util.AssertUtil;
 import cn.gmlee.tools.base.util.HttpUtil;
 import cn.gmlee.tools.base.util.JsonUtil;
+import cn.gmlee.util.ConsoleKit;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The type Fei shu reader.
@@ -27,6 +25,9 @@ public class FeiShuReader {
      * @return the map
      */
     public static Map<String, List<String>> getSubscribeMap() {
+        if(ConsoleKit.isStock(ConsoleKit.getCode())){
+            return KvBuilder.map("891f3744", Arrays.asList(ConsoleKit.getCode().split(",")));
+        }
         String url = String.format(getMultiTableApi, "X1ZCbM4PBahKJhsQeWlczzFonzR", "tblRZ5sw6u4j1F7I");
         String body = "{  \"view_id\": \"%s\",  \"field_names\": [    \"股票代码\",    \"提交人\"  ],  \"filter\": {    \"conjunction\": \"and\",    \"conditions\": [      {        \"field_name\": \"是否缴费\",        \"operator\": \"is\",        \"value\": [          \"true\"        ]      }    ]  },  \"automatic_fields\": false}";
         Map map = JsonUtil.toBean(String.format(body, "vewECJ0Fv2"), Map.class);

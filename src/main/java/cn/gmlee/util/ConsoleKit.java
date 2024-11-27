@@ -1,6 +1,7 @@
 package cn.gmlee.util;
 
 import cn.gmlee.tools.base.util.BoolUtil;
+import cn.gmlee.tools.base.util.NullUtil;
 import lombok.Data;
 
 /**
@@ -33,7 +34,7 @@ public class ConsoleKit {
                     if (a.length() == 8) {
                         this.date = a;
                     }
-                    if (a.length() == 6) {
+                    if (isStock(a)) {
                         this.code = a;
                     }
                 } else {
@@ -132,5 +133,21 @@ public class ConsoleKit {
             return null;
         }
         return obj.getCode();
+    }
+
+    /**
+     * Is stock boolean.
+     *
+     * @param content the content
+     * @return the boolean
+     */
+    public static boolean isStock(String content) {
+        String[] split = NullUtil.get(content).split(",");
+        for (String str : split) {
+            if (str.length() != 6 || !BoolUtil.isDigit(str)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
