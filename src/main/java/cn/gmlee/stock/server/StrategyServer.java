@@ -161,6 +161,7 @@ public class StrategyServer {
     public boolean sendMessage() {
         // 策略数据准备
         List<StockStrategy> list = stockStrategyService.list(Wrappers.<StockStrategy>lambdaQuery()
+                .eq(BoolUtil.notEmpty(ConsoleKit.getStrategyId()), StockStrategy::getId, ConsoleKit.getStrategyId())
                 .eq(StockStrategy::getStatus, 1)
         );
         Map<Integer, StockStrategy> strategyMap = list.stream().collect(Collectors.toMap(StockStrategy::getId, Function.identity()));
@@ -265,7 +266,7 @@ public class StrategyServer {
         boolean sell = isDeal(stockMap, sellRule, excludeSellRule);
         Map variableMap = JsonUtil.convert(stock, Map.class);
         // 添加颜色和地址
-        variableMap.put("color", buy ? "red" : sell ? "grren" : "gray");
+        variableMap.put("color", buy ? "red" : sell ? "green" : "gray");
         variableMap.put("url", String.format("https://gushitong.baidu.com/stock/ab-%s", stock.getCode()));
         return variableMap;
     }
