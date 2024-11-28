@@ -36,6 +36,7 @@ public class App {
                     SysKit.clear();
                     continue;
                 }
+                long start = System.currentTimeMillis();
                 ConsoleServer consoleServer = IocUtil.getBean(ConsoleServer.class);
                 if (consoleServer != null) {
                     try {
@@ -47,6 +48,7 @@ public class App {
                         ConsoleKit.remove();
                     }
                 }
+                System.out.println(String.format("指令已处理: %s(ms)", System.currentTimeMillis() - start));
                 System.out.print("请输入指令: ");
             }
             System.out.println("收到退出指令: 再见!");
