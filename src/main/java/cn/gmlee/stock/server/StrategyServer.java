@@ -252,7 +252,7 @@ public class StrategyServer {
                     return;
                 }
                 // 交易处理
-                List<StockStrategyDeal> dealLis = stock2024s.stream().map(
+                List<StockStrategyDeal> dealLis = stock2024s.parallelStream().map(
                         x -> ExceptionUtil.sandbox(() -> deal(x, dealMap, strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule))
                 ).filter(Objects::nonNull).collect(Collectors.toList());
                 stockStrategyDealService.insertOrUpdateBatch(dealLis);
