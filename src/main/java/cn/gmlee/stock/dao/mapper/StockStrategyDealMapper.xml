@@ -8,34 +8,37 @@
         <result column="code" property="code"/>
         <result column="name" property="name"/>
         <result column="price" property="price"/>
-        <result column="sell_price" property="sellPrice"/>
-        <result column="sell_date" property="sellDate"/>
+        <result column="current_date" property="currentPrice"/>
+        <result column="current_date" property="currentDate"/>
+        <result column="days" property="days"/>
+        <result column="sold" property="sold"/>
         <result column="strategy_id" property="strategyId"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        date, code, name, price, sell_price, sell_date, strategy_id
+        date, code, name, price, current_price, current_date, days, sold, strategy_id
     </sql>
 
     <insert id="insertOrUpdateBatch">
         INSERT INTO stock_strategy_deal (
-        `date`, `code`, `name`, `price`, `sell_price`,
-        `sell_date`, `rise_ratio`, `days`, `strategy_id`
+        `date`, `code`, `name`, `price`, `current_price`,
+        `current_date`, `rise_ratio`, `days`, `sold`, `strategy_id`
         )
         VALUES
         <foreach collection="entities" item="item" separator=",">
             (
-            #{item.date}, #{item.code}, #{item.name}, #{item.price}, #{item.sellPrice},
-            #{item.sellDate}, #{item.riseRatio}, #{item.days}, #{item.strategyId}
+            #{item.date}, #{item.code}, #{item.name}, #{item.price}, #{item.currentPrice},
+            #{item.currentDate}, #{item.riseRatio}, #{item.days}, #{item.sold}, #{item.strategyId}
             )
         </foreach>
         ON DUPLICATE KEY UPDATE
         `name` = VALUES(`name`),
         `price` = VALUES(`price`),
-        `sell_price` = VALUES(`sell_price`),
-        `sell_date` = VALUES(`sell_date`),
+        `current_price` = VALUES(`current_price`),
+        `current_date` = VALUES(`current_date`),
         `rise_ratio` = VALUES(`rise_ratio`),
-        `days` = VALUES(`days`);
+        `days` = VALUES(`days`),
+        `sold` = VALUES(`sold`);
     </insert>
 </mapper>

@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import com.baomidou.mybatisplus.annotation.*;
 
-import java.util.Date;
 import java.io.Serializable;
 
 import com.gitee.sunchenbin.mybatis.actable.annotation.Column;
@@ -46,19 +45,19 @@ public class StockStrategyDeal implements Serializable {
     private BigDecimal price;
 
     @Column
-    private BigDecimal sellPrice;
+    private BigDecimal currentPrice;
 
-    /**
-     * 卖出日期
-     */
     @Column
-    private String sellDate;
+    private String currentDate;
 
     @Column
     private BigDecimal riseRatio;
 
     @Column
     private Integer days;
+
+    @Column
+    private Boolean sold;
 
     @IsKey
     @TableField

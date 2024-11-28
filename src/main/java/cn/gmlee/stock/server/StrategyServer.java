@@ -94,26 +94,26 @@ public class StrategyServer {
         boolean sell = isDeal(stockMap, sellRule, excludeSellRule);
         if (deal == null && buy) {
             StockStrategyDeal entity = new StockStrategyDeal();
-            entity.setStrategyId(strategy.getId());
             entity.setDate(stock2024.getDate());
             entity.setCode(stock2024.getCode());
             entity.setName(stock2024.getName());
             entity.setPrice(stock2024.getCurrentPrice());
-            entity.setSellPrice(null);
-            entity.setSellDate(null);
+            entity.setStrategyId(strategy.getId());
+            entity.setSold(false);
             return entity;
         }
-        if (deal != null && sell) {
+        if (deal != null) {
             StockStrategyDeal entity = new StockStrategyDeal();
-            entity.setStrategyId(strategy.getId());
             entity.setDate(deal.getDate());
             entity.setCode(deal.getCode());
             entity.setName(deal.getName());
             entity.setPrice(deal.getPrice());
-            entity.setSellPrice(stock2024.getCurrentPrice());
-            entity.setSellDate(stock2024.getDate());
+            entity.setCurrentPrice(stock2024.getCurrentPrice());
+            entity.setCurrentDate(stock2024.getDate());
             entity.setRiseRatio(RatioKit.calculate(deal.getPrice(), stock2024.getCurrentPrice()));
             entity.setDays((int) LocalDateTimeUtil.between(deal.getDate(), stock2024.getDate()).toDays());
+            entity.setSold(!deal.getSold() && sell); // 标记已卖出
+            entity.setStrategyId(strategy.getId());
             return entity;
         }
         return null;
@@ -217,7 +217,7 @@ public class StrategyServer {
         // 持仓数据准备
         List<StockStrategyDeal> deals = stockStrategyDealService.list(Wrappers.<StockStrategyDeal>lambdaQuery()
                 .in(StockStrategyDeal::getStrategyId, strategy.getId())
-                .isNull(StockStrategyDeal::getRiseRatio)
+                .eq(StockStrategyDeal::getSold, false)
                 .orderByAsc(StockStrategyDeal::getDate)
         );
         Map<String, StockStrategyDeal> dealMap = deals.stream().collect(Collectors.toMap(StockStrategyDeal::getCode, Function.identity(), (k1, k2) -> k1));
