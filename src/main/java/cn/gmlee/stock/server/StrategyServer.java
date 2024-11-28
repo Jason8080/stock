@@ -98,8 +98,12 @@ public class StrategyServer {
             entity.setCode(stock2024.getCode());
             entity.setName(stock2024.getName());
             entity.setPrice(stock2024.getCurrentPrice());
-            entity.setStrategyId(strategy.getId());
+            entity.setCurrentPrice(stock2024.getCurrentPrice());
+            entity.setCurrentDate(stock2024.getDate());
+            entity.setRiseRatio(RatioKit.calculate(deal.getPrice(), stock2024.getCurrentPrice()));
+            entity.setDays(0);
             entity.setSold(false);
+            entity.setStrategyId(strategy.getId());
             return entity;
         }
         if (deal != null) {
