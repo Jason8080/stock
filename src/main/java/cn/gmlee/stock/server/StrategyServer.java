@@ -1,6 +1,7 @@
 package cn.gmlee.stock.server;
 
 import cn.gmlee.stock.dao.entity.*;
+import cn.gmlee.stock.mod.Stats;
 import cn.gmlee.stock.mod.Stock;
 import cn.gmlee.stock.mod.StockToStockYear;
 import cn.gmlee.stock.service.Stock2024Service;
@@ -271,10 +272,11 @@ public class StrategyServer {
         // 卖出规则准备
         List<StockStrategyRule> sellRule = groupMap.get(-1);
         List<StockStrategyRule> excludeSellRule = groupMap.get(-2);
+        List<Stats> stats = stockStrategyService.listStats(null, null, strategy.getId());
         // 准备飞书消息
         Map map = new HashMap();
-        map.put("winRate", "100");
-        map.put("profitRate", "100");
+        map.put("winRate", BoolUtil.isEmpty(stats) ? "100" : stats.get(0).getProfitRatio());
+        map.put("profitRate", BoolUtil.isEmpty(stats) ? "100" : stats.get(0).getProfit());
         map.put("zjzf", "100");
         map.put("zjly", "100");
         map.put("zjyz", "100");

@@ -4,18 +4,43 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="cn.gmlee.stock.dao.entity.StockStrategy">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="author" property="author" />
-        <result column="v" property="v" />
-        <result column="remark" property="remark" />
-        <result column="status" property="status" />
-        <result column="created_at" property="createdAt" />
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="author" property="author"/>
+        <result column="v" property="v"/>
+        <result column="remark" property="remark"/>
+        <result column="status" property="status"/>
+        <result column="created_at" property="createdAt"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, author, v, remark, status, created_at
+        id
+        , name, author, v, remark, status, created_at
     </sql>
 
+    <!-- 统计查询 -->
+    <select id="listStats" resultType="cn.gmlee.stock.mod.Stats">
+        SELECT
+        s.id as strategyId,
+        CONCAT(s.`name`,'v',s.v) as strategyName,
+        COUNT(*) AS total,
+        SUM(d.rise_ratio) AS profit,
+        SUM(CASE WHEN d.rise_ratio > 0 THEN 1 ELSE 0 END) AS profitTotal,
+        ROUND(SUM(CASE WHEN d.rise_ratio > 0 THEN 1 ELSE 0 END) / COUNT(*) * 100, 2) AS profitRatio
+        FROM stock_strategy_deal d LEFT JOIN stock_strategy s on d.strategy_id = s.id
+        <where>
+            d.rise_ratio is not null
+            <if test="start!=null and end!=null">
+                and d.date between #{start} and #{end}
+            </if>
+            <if test="ids!=null and ids.length > 0">
+                and d.strategy_id in
+                <foreach collection="ids" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY d.strategy_id;
+    </select>
 </mapper>
