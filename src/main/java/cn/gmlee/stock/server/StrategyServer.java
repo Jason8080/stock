@@ -235,9 +235,9 @@ public class StrategyServer {
         // 并发处理
         CountDownLatch latch = new CountDownLatch(pages);
         for (int i = 0; i < pages; i++) {
-            int current = i;
+            int current = i + 1;
             ThreadUtil.execute(() -> {
-                IPage<Stock2024> page = new Page<>(current + 1, size);
+                IPage<Stock2024> page = new Page<>(current, size);
                 IPage<Stock2024> iPage = stock2024Service.page(page, qw);
                 List<Stock2024> stock2024s = iPage.getRecords();
                 if (BoolUtil.isEmpty(stock2024s)) {
