@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Function;
@@ -100,7 +101,7 @@ public class StrategyServer {
             entity.setPrice(stock2024.getCurrentPrice());
             entity.setCurrentPrice(stock2024.getCurrentPrice());
             entity.setCurrentDate(stock2024.getDate());
-            entity.setRiseRatio(RatioKit.calculate(deal.getPrice(), stock2024.getCurrentPrice()));
+            entity.setRiseRatio(BigDecimal.ZERO);
             entity.setDays(0);
             entity.setSold(false);
             entity.setStrategyId(strategy.getId());
