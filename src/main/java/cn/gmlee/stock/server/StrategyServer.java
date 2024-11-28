@@ -16,9 +16,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -58,7 +60,7 @@ public class StrategyServer {
         );
         Map<Integer, List<StockStrategyRule>> ruleMap = rules.stream().collect(Collectors.groupingBy(StockStrategyRule::getStrategyId));
         // 持仓数据清理
-        if(BoolUtil.notEmpty(ConsoleKit.getStrategyId())){
+        if (BoolUtil.notEmpty(ConsoleKit.getStrategyId())) {
             stockStrategyDealService.remove(Wrappers.<StockStrategyDeal>lambdaQuery().eq(StockStrategyDeal::getStrategyId, ConsoleKit.getStrategyId()));
         }
         // 单个策略处理
@@ -203,7 +205,7 @@ public class StrategyServer {
         List<StockStrategyRule> excludeSellRule = groupMap.get(-2);
         // 数据储备日期
         List<Stock2024> list = stock2024Service.list(Wrappers.<Stock2024>lambdaQuery().select(Stock2024::getDate).groupBy(Stock2024::getDate));
-        if(BoolUtil.isEmpty(ConsoleKit.getStrategyId())){
+        if (BoolUtil.isEmpty(ConsoleKit.getStrategyId())) {
             return oneDayHandle(TimeUtil.getCurrentDatetime(XTime.DAY_NONE), strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule);
         }
         list.stream().map(Stock2024::getDate).filter(BoolUtil::notEmpty).forEach(date -> oneDayHandle(date, strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule));
@@ -219,19 +221,37 @@ public class StrategyServer {
         );
         Map<String, StockStrategyDeal> dealMap = deals.stream().collect(Collectors.toMap(StockStrategyDeal::getCode, Function.identity(), (k1, k2) -> k1));
         // 股票数据准备
-        IPage<Stock2024> page = new Page<>(1, 1000);
-        LambdaQueryWrapper<Stock2024> qw = Wrappers.<Stock2024>lambdaQuery().eq(Stock2024::getDate, date);
-        PageUtil.nextPage(() -> stock2024Service.page(page, qw), (List<Stock2024> stock2024s) -> {
-            if (BoolUtil.isEmpty(stock2024s)) {
-                return;
-            }
-            // 交易股票准备
-            List<StockStrategyDeal> dealLis = stock2024s.stream().map(
-                    x -> ExceptionUtil.sandbox(() -> deal(x, dealMap, strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule))
-            ).filter(Objects::nonNull).collect(Collectors.toList());
-            stockStrategyDealService.insertOrUpdateBatch(dealLis);
-        });
+        paging(date, strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule, dealMap);
         return true;
+    }
+
+    @SneakyThrows
+    private void paging(String date, StockStrategy strategy, List<StockStrategyRule> buyRule, List<StockStrategyRule> excludeBuyRule, List<StockStrategyRule> sellRule, List<StockStrategyRule> excludeSellRule, Map<String, StockStrategyDeal> dealMap) {
+        // 数据准备
+        LambdaQueryWrapper<Stock2024> qw = Wrappers.<Stock2024>lambdaQuery().eq(Stock2024::getDate, date);
+        int count = stock2024Service.count(qw);
+        int size = 1000;
+        int pages = (int) Math.ceil(count / size);
+        // 并发处理
+        CountDownLatch latch = new CountDownLatch(pages);
+        for (int i = 0; i < pages; i++) {
+            int current = i;
+            ThreadUtil.execute(() -> {
+                IPage<Stock2024> page = new Page<>(current + 1, size);
+                IPage<Stock2024> iPage = stock2024Service.page(page, qw);
+                List<Stock2024> stock2024s = iPage.getRecords();
+                if (BoolUtil.isEmpty(stock2024s)) {
+                    return;
+                }
+                // 交易处理
+                List<StockStrategyDeal> dealLis = stock2024s.stream().map(
+                        x -> ExceptionUtil.sandbox(() -> deal(x, dealMap, strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule))
+                ).filter(Objects::nonNull).collect(Collectors.toList());
+                stockStrategyDealService.insertOrUpdateBatch(dealLis);
+                latch.countDown();
+            });
+        }
+        latch.await();
     }
 
     private void strategyHandlerOne(StockStrategy strategy, Map<Integer, List<StockStrategyRule>> ruleMap, Map<String, List<String>> subscribeMap, Map<String, Stock> codeMap) {
