@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.gmlee.stock.dao.mapper.StockStrategyLockMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.gmlee.stock.dao.entity.StockStrategyLock">
+        <id column="date" property="date" />
+        <result column="total" property="total" />
+        <result column="profit" property="profit" />
+        <result column="profit_total" property="profitTotal" />
+        <result column="profit_ratio" property="profitRatio" />
+        <result column="lock" property="lock" />
+        <result column="lock_total" property="lockTotal" />
+        <result column="lock_ratio" property="lockRatio" />
+        <result column="strategy_id" property="strategyId" />
+        <result column="strategy_name" property="strategyName" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        date, total, profit, profit_total, profit_ratio, lock, lock_total, lock_ratio, strategy_id, strategy_name
+    </sql>
+
+</mapper>
