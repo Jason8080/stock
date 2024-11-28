@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.gmlee.stock.dao.mapper.StockStrategyLockMapper">
+    <!-- 统计查询 -->
+    <select id="stats" resultType="cn.gmlee.stock.dao.entity.StockStrategyLock">
+        SELECT
+        s.id as strategyId,
+        CONCAT(s.`name`,'v',s.v) as strategyName,
+        COUNT(*) AS total,
+        SUM(d.rise_ratio) AS profit,
+        SUM(CASE WHEN d.rise_ratio > 0 THEN 1 ELSE 0 END) AS profitTotal,
+        ROUND(SUM(CASE WHEN d.rise_ratio > 0 THEN 1 ELSE 0 END) / COUNT(*) * 100, 2) AS profitRatio
+        FROM stock_strategy_deal d LEFT JOIN stock_strategy s on d.strategy_id = s.id
+        <where>
+            d.rise_ratio is not null
+            <if test="start!=null and end!=null">
+                and d.date between #{start} and #{end}
+            </if>
+            <if test="ids!=null and ids.length > 0">
+                and d.strategy_id in
+                <foreach collection="ids" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY d.strategy_id;
+    </select>
+</mapper>
