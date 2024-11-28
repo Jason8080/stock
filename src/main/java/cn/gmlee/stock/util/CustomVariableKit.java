@@ -2,7 +2,6 @@ package cn.gmlee.stock.util;
 
 import cn.gmlee.stock.mod.Stock;
 import cn.gmlee.tools.base.util.BigDecimalUtil;
-import cn.gmlee.tools.base.util.BoolUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,19 +26,33 @@ public class CustomVariableKit {
         addSxl(stock, stockMap);
         // 添加离天
         addLtl(stock, stockMap);
+        // 添加离地
+        addLdl(stock, stockMap);
+    }
+
+    private static void addLdl(Stock stock, Map<String, Object> stockMap) {
+        // 离地率 = 最低 - (今开 | 价格) / 最高 - 最低
+        BigDecimal openPrice = BigDecimalUtil.get(stock.getOpenPrice());
+        BigDecimal highestPrice = BigDecimalUtil.get(stock.getHighestPrice());
+        BigDecimal lowestPrice = BigDecimalUtil.get(stock.getLowestPrice());
+        BigDecimal price = BigDecimalUtil.get(stock.getCurrentPrice());
+        BigDecimal xc = BigDecimalUtil.subtract(highestPrice, lowestPrice); // 线长
+        double max = Math.max(openPrice.doubleValue(), price.doubleValue()); // 最小
+        BigDecimal jl = BigDecimalUtil.divide(BigDecimalUtil.subtract(lowestPrice, max), xc); // 距离
+        BigDecimal result = BigDecimalUtil.multiply(jl, 100).abs();
+        stockMap.put("离地", result.setScale(2, RoundingMode.HALF_UP));
     }
 
     private static void addLtl(Stock stock, Map<String, Object> stockMap) {
         // 离天率 = 最高 - (今开 | 价格) / 最高 - 最低
         BigDecimal openPrice = BigDecimalUtil.get(stock.getOpenPrice());
         BigDecimal highestPrice = BigDecimalUtil.get(stock.getHighestPrice());
+        BigDecimal lowestPrice = BigDecimalUtil.get(stock.getLowestPrice());
         BigDecimal price = BigDecimalUtil.get(stock.getCurrentPrice());
+        BigDecimal xc = BigDecimalUtil.subtract(highestPrice, lowestPrice); // 线长
         double min = Math.min(openPrice.doubleValue(), price.doubleValue()); // 最小
-        double max = Math.max(openPrice.doubleValue(), price.doubleValue()); // 最大
-        boolean ge = BoolUtil.gt(price, openPrice); // 是否红线
-        BigDecimal xc = BigDecimalUtil.subtract(stock.getHighestPrice(), stock.getLowestPrice()); // 线长
-        BigDecimal jl = BigDecimalUtil.divide(ge ? BigDecimalUtil.subtract(highestPrice, min) : BigDecimalUtil.subtract(highestPrice, max), xc); // 距离
-        BigDecimal result = BigDecimalUtil.multiply(jl, 100);
+        BigDecimal jl = BigDecimalUtil.divide(BigDecimalUtil.subtract(highestPrice, min), xc); // 距离
+        BigDecimal result = BigDecimalUtil.multiply(jl, 100).abs();
         stockMap.put("离天", result.setScale(2, RoundingMode.HALF_UP));
     }
 
