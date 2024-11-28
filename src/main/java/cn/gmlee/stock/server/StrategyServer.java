@@ -149,7 +149,14 @@ public class StrategyServer {
             Map.Entry<String, Object> next = it.next();
             String key = next.getKey();
             Object value = next.getValue();
-            rule = rule.replace(key, value != null ? value.toString() : "");
+            if (value != null) {
+                rule = rule.replace(key, value.toString());
+            } else {
+                rule = rule.replace("&&".concat(key), "");
+                rule = rule.replace("||".concat(key), "");
+                rule = rule.replace("&".concat(key), "");
+                rule = rule.replace("|".concat(key), "");
+            }
         }
         return rule;
     }
