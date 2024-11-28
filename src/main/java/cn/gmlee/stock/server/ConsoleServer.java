@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ConsoleServer {
 
+    private final LockServer lockServer;
+
     private final StockServer stockServer;
 
     private final StrategyServer strategyServer;
@@ -35,6 +37,9 @@ public class ConsoleServer {
         }
         if (content.startsWith("deal")) {
             return strategyServer.dealHandle();
+        }
+        if (content.startsWith("lock")) {
+            return lockServer.lockStats();
         }
         if (content.startsWith("send")) {
             return strategyServer.sendMessage();
