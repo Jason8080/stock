@@ -149,9 +149,7 @@ public class StrategyServer {
             Map.Entry<String, Object> next = it.next();
             String key = next.getKey();
             Object value = next.getValue();
-            if (value != null) {
-                rule = rule.replace(key, value.toString());
-            }
+            rule = rule.replace(key, value != null ? value.toString() : "");
         }
         return rule;
     }
