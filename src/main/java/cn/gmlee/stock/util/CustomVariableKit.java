@@ -38,8 +38,8 @@ public class CustomVariableKit {
         double max = Math.max(openPrice.doubleValue(), price.doubleValue()); // 最大
         boolean ge = BoolUtil.gt(price, openPrice); // 是否红线
         BigDecimal xc = BigDecimalUtil.subtract(stock.getHighestPrice(), stock.getLowestPrice()); // 线长
-        BigDecimal sx = BigDecimalUtil.divide(ge ? BigDecimalUtil.subtract(highestPrice, min) : BigDecimalUtil.subtract(highestPrice, max), xc); // 距离
-        BigDecimal result = BigDecimalUtil.multiply(sx, 100).abs();
+        BigDecimal jl = BigDecimalUtil.divide(ge ? BigDecimalUtil.subtract(highestPrice, min) : BigDecimalUtil.subtract(highestPrice, max), xc); // 距离
+        BigDecimal result = BigDecimalUtil.multiply(jl, 100);
         stockMap.put("离天", result.setScale(2, RoundingMode.HALF_UP));
     }
 
