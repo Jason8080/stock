@@ -1,6 +1,7 @@
 package cn.gmlee.stock.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.gitee.sunchenbin.mybatis.actable.annotation.Column;
@@ -22,16 +23,14 @@ import java.math.BigDecimal;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("stock_strategy_lock")
+@KeySequence("SEQ_STOCK_STRATEGY_LOCK")
 public class StockStrategyLock implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @IsKey
-    @TableId(type = IdType.AUTO)
-    private Long id;
-
-    @Column
-    private String strategyName;
+    @TableId(type = IdType.INPUT)
+    private String date;
 
     @Column
     private Long total;
@@ -50,6 +49,10 @@ public class StockStrategyLock implements Serializable {
     @Column
     private BigDecimal lockRatio;
 
+    @IsKey
     @Column
     private Integer strategyId;
+
+    @Column
+    private String strategyName;
 }
