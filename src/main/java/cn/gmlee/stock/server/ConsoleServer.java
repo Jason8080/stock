@@ -47,7 +47,7 @@ public class ConsoleServer {
         System.out.println(String.format("[%s]: %s", "list", "初始化沪深市场列表"));
         System.out.println(String.format("[%s]: %s", "pull", "拉取当前沪深股票行情(基于list)"));
         System.out.println(String.format("[%s]: %s", "deal", "根据交易规则进行交易(基于pull)"));
-        System.out.println(String.format("[%s]: %s", "lock", "统计持仓中的股票盈亏(基于deal)"));
+        System.out.println(String.format("[%s]: %s", "lock", "统计当前持仓盈亏情况(基于deal)"));
         System.out.println(String.format("[%s]: %s", "send", "根据订阅内容推送消息(基于rule)"));
         return true;
     }
