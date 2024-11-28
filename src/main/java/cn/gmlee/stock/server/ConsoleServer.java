@@ -24,7 +24,7 @@ public class ConsoleServer {
      * @param content the content
      */
     public boolean handle(String content) {
-        if (content.startsWith("help")) {
+        if (BoolUtil.isEmpty(content) || content.startsWith("help")) {
             return help(content);
         }
         if (content.startsWith("list")) {
