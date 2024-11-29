@@ -117,8 +117,10 @@ public class StrategyServer {
             entity.setCurrentDate(stock2024.getDate());
             entity.setRiseRatio(RatioKit.calculate(deal.getPrice(), stock2024.getCurrentPrice()));
             ExceptionUtil.sandbox(() -> {
-                entity.setDays((int) LocalDateTimeUtil.between(deal.getDate(), stock2024.getDate()).toDays());
-            }, () -> System.out.println(String.format("这是怎么了? %s_%s", deal.getDate(), stock2024.getDate())));
+                Date start = TimeUtil.parseTime(deal.getDate(), XTime.DAY_NONE);
+                Date end = TimeUtil.parseTime(stock2024.getDate(), XTime.DAY_NONE);
+                entity.setDays((int) LocalDateTimeUtil.between(start, end).toDays());
+            });
             entity.setSold(!deal.getSold() && sell); // 标记已卖出
             entity.setStrategyId(strategy.getId());
             return entity;
