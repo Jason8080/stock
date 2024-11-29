@@ -306,7 +306,8 @@ public class StrategyServer {
         boolean buy = isDeal(stockMap, buyRule, excludeBuyRule);
         boolean sell = isDeal(stockMap, sellRule, excludeSellRule);
         Map variableMap = JsonUtil.convert(stock, Map.class);
-        // 添加颜色和地址
+        // 添加实心/颜色/地址
+        variableMap.put("solidRatio", stockMap.get("实心"));
         variableMap.put("color", buy ? "red" : sell ? "green" : "gray");
         variableMap.put("url", String.format("https://gushitong.baidu.com/stock/ab-%s", stock.getCode()));
         return variableMap;
