@@ -280,13 +280,16 @@ public class StrategyServer {
         // 卖出规则准备
         List<StockStrategyRule> sellRule = groupMap.get(-1);
         List<StockStrategyRule> excludeSellRule = groupMap.get(-2);
+        // 统计数据准备
+        Map<String, Object> soldStats = stockStrategyDealService.stats(null, null, true, strategy.getId());
+        Map<String, Object> lockStats = stockStrategyDealService.stats(null, null, false, strategy.getId());
         // 准备飞书消息
         Map map = new HashMap();
-        map.put("winRate", "100");
-        map.put("profitRate", "100");
-        map.put("zjzf", "100");
-        map.put("zjly", "100");
-        map.put("zjyz", "100");
+        map.put("winRate", soldStats.get("胜率%"));
+        map.put("profitRate", soldStats.get("盈亏%"));
+        map.put("lockRatio", lockStats.get("占比%"));
+        map.put("lockWinRate", lockStats.get("胜率%"));
+        map.put("lockProfitRate", lockStats.get("盈亏%"));
         map.put("strategyName", String.format("%sv%s", strategy.getName(), strategy.getV()));
         map.put("strategyAuthor", strategy.getAuthor());
         List<Map> list = subscribes.stream().map(code ->

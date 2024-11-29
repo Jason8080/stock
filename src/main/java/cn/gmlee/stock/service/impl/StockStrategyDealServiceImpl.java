@@ -7,7 +7,9 @@ import cn.gmlee.tools.base.util.BoolUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -26,5 +28,10 @@ public class StockStrategyDealServiceImpl extends ServiceImpl<StockStrategyDealM
             return;
         }
         baseMapper.insertOrUpdateBatch(entities);
+    }
+
+    @Override
+    public Map<String, Object> stats(Date start, Date end, Boolean sold, Integer... ids) {
+        return baseMapper.stats(start, end, sold, ids);
     }
 }

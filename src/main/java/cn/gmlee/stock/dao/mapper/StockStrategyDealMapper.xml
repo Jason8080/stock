@@ -41,4 +41,36 @@
         `days` = VALUES(`days`),
         `sold` = VALUES(`sold`);
     </insert>
+
+    <!-- 统计查询 -->
+    <select id="stats" resultType="java.util.Map">
+        SELECT
+        CONCAT(s.`name`,'v',s.v) '策略',
+        (CASE
+        WHEN d.sold THEN '卖出'
+        WHEN !d.sold THEN '持有'
+        END) AS '状态' ,
+        ROUND(COUNT(*) / (select count(1) from stock_strategy_deal where strategy_id = d.strategy_id) * 100, 2) AS
+        '占比%',
+        COUNT(*) AS '总数(只)',
+        SUM(d.rise_ratio) AS '盈亏%',
+        SUM(CASE WHEN d.rise_ratio > 0 THEN 1 ELSE 0 END) AS '盈利(只)',
+        ROUND(SUM(CASE WHEN d.rise_ratio > 0 THEN 1 ELSE 0 END) / COUNT(*) * 100, 2) AS '胜率%'
+        FROM stock_strategy_deal d LEFT JOIN stock_strategy s on d.strategy_id = s.id
+        <where>
+            <if test="sold!=null">
+                and d.sold = #{sold}
+            </if>
+            <if test="start!=null and end!=null">
+                and d.date between #{start} and #{end}
+            </if>
+            <if test="ids!=null and ids.length > 0">
+                and d.strategy_id in
+                <foreach collection="ids" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY d.strategy_id
+    </select>
 </mapper>
