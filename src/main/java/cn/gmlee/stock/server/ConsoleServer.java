@@ -39,6 +39,9 @@ public class ConsoleServer {
         if (content.startsWith("send")) {
             return strategyServer.sendMessage();
         }
+        if (content.startsWith("?")) {
+            return strategyServer.sendMessage();
+        }
         return other(content);
     }
 

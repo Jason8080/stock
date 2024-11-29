@@ -25,18 +25,20 @@ public class ConsoleKit {
          * @param content the content
          */
         public Obj(String content) {
-            String[] arr = content.split(" ");
+            String[] arr = content.trim().split("[ ?]");
             for (String a : arr) {
-                if (BoolUtil.isDigit(a)) {
+                a = a.trim();
+                if (isStock(a)) {
+                    this.code = a;
+                } else if (BoolUtil.isDigit(a)) {
                     if (a.length() == 1) {
                         this.strategy = a;
                     }
                     if (a.length() == 8) {
                         this.date = a;
                     }
-                    if (isStock(a)) {
-                        this.code = a;
-                    }
+                } else if (BoolUtil.isEmpty(a)) {
+                    this.cmd = "?";
                 } else {
                     this.cmd = a;
                 }
@@ -144,7 +146,7 @@ public class ConsoleKit {
     public static boolean isStock(String content) {
         String[] split = NullUtil.get(content).split(",");
         for (String str : split) {
-            if (str.length() != 6 || !BoolUtil.isDigit(str)) {
+            if (BoolUtil.isEmpty(str) || str.length() != 6 || !BoolUtil.isDigit(str)) {
                 return false;
             }
         }

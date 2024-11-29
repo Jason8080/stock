@@ -283,6 +283,12 @@ public class StrategyServer {
         // 统计数据准备
         Map<String, Object> soldStats = stockStrategyDealService.stats(null, null, true, strategy.getId());
         Map<String, Object> lockStats = stockStrategyDealService.stats(null, null, false, strategy.getId());
+        System.out.println(String.format("------ %sv%s ------", strategy.getName(), strategy.getV()));
+        System.out.println(soldStats);
+        System.out.println(lockStats);
+        if("?".equals(ConsoleKit.getCmd())){
+            return;
+        }
         // 准备飞书消息
         Map map = new HashMap();
         map.put("winRate", soldStats.get("胜率%"));

@@ -45,7 +45,7 @@
     <!-- 统计查询 -->
     <select id="stats" resultType="java.util.Map">
         SELECT
-        CONCAT(s.`name`,'v',s.v) '策略',
+        CONCAT(s.`name`,'v',s.v) '策略名称',
         (CASE
         WHEN d.sold THEN '卖出'
         WHEN !d.sold THEN '持有'
