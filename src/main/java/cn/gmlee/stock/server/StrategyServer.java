@@ -286,9 +286,6 @@ public class StrategyServer {
         System.out.println(String.format("------ %sv%s ------", strategy.getName(), strategy.getV()));
         System.out.println(soldStats);
         System.out.println(lockStats);
-        if("?".equals(ConsoleKit.getCmd())){
-            return;
-        }
         // 准备飞书消息
         Map map = new HashMap();
         map.put("winRate", soldStats.get("胜率%"));
@@ -302,6 +299,10 @@ public class StrategyServer {
                 ExceptionUtil.sandbox(() -> getVariablesMap(strategy, codeMap.get(code), buyRule, excludeBuyRule, sellRule, excludeSellRule))
         ).filter(Objects::nonNull).collect(Collectors.toList());
         map.put("list", list);
+        System.out.println(list);
+        if("?".equals(ConsoleKit.getCmd())){
+            return;
+        }
         FeiShuSender.send(uid, map);
     }
 
