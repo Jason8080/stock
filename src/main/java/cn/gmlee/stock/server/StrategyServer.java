@@ -312,6 +312,11 @@ public class StrategyServer {
         // 交易规则 and 关系、(排除)交易规则 or 关系
         boolean buy = isDeal(stockMap, buyRule, excludeBuyRule);
         boolean sell = isDeal(stockMap, sellRule, excludeSellRule);
+        if("?".equals(ConsoleKit.getCmd())){
+            Map map = new HashMap(2);
+            map.put( buy ? "买入" : sell ? "卖出" : "观望", stock.getName());
+            return map;
+        }
         Map variableMap = JsonUtil.convert(stock, Map.class);
         // 添加实心/颜色/地址
         variableMap.put("solidRatio", stockMap.get("实心"));
