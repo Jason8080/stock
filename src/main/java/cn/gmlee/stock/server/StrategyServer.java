@@ -39,6 +39,8 @@ public class StrategyServer {
     private final StockStrategyRuleService stockStrategyRuleService;
     private final StockStrategyDealService stockStrategyDealService;
 
+    private final ThreadUtil.Pool pool = ThreadUtil.getScheduledPool(Runtime.getRuntime().availableProcessors());
+
     /**
      * Deal handle.
      *
@@ -246,7 +248,7 @@ public class StrategyServer {
         CountDownLatch latch = new CountDownLatch(pages);
         for (int i = 0; i < pages; i++) {
             int current = i + 1;
-            ThreadUtil.execute(() -> {
+            pool.execute(() -> {
                 IPage<Stock2024> page = new Page<>(current, size);
                 IPage<Stock2024> iPage = stock2024Service.page(page, qw);
                 List<Stock2024> stock2024s = iPage.getRecords();

@@ -28,6 +28,19 @@ public class CustomVariableKit {
         addLtl(stock, stockMap);
         // 添加离地
         addLdl(stock, stockMap);
+        // 添加年位
+        addNwz(stock, stockMap);
+    }
+
+    private static void addNwz(Stock stock, Map<String, Object> stockMap) {
+        // 年位置 = 价格 - 年底 / 年 高 - 年底
+        BigDecimal currentPrice = BigDecimalUtil.get(stock.getCurrentPrice());
+        BigDecimal topYear = BigDecimalUtil.get(stock.getTopYear());
+        BigDecimal bottomYear = BigDecimalUtil.get(stock.getBottomYear());
+        BigDecimal jl = BigDecimalUtil.subtract(currentPrice, bottomYear); // 距离
+        BigDecimal xc = BigDecimalUtil.subtract(topYear, bottomYear); // 线长
+        BigDecimal result = BigDecimalUtil.multiply(BigDecimalUtil.divide(jl, xc), 100).abs();
+        stockMap.put("年位", result.setScale(2, RoundingMode.HALF_UP));
     }
 
     private static void addLdl(Stock stock, Map<String, Object> stockMap) {
