@@ -64,14 +64,26 @@ public class StockTaskAutoConfiguration {
     }
 
     /**
-     * 发送量化消息
+     * 订阅量化消息
      */
     @Scheduled(cron = "0 55 14 ? * 1-5")
-    public void sendMessage() {
+    public void userMessage() {
         if (BoolUtil.notEmpty(db)) {
             log.warn("当前持久化采用的是: {}", db);
             DynamicDataSourceHolder.set(db);
         }
-        strategyServer.sendMessage();
+        strategyServer.userMessage();
+    }
+
+    /**
+     * 群发量化消息
+     */
+    @Scheduled(cron = "0 55 14 ? * 1-5")
+    public void groupMessage() {
+        if (BoolUtil.notEmpty(db)) {
+            log.warn("当前持久化采用的是: {}", db);
+            DynamicDataSourceHolder.set(db);
+        }
+        strategyServer.groupMessage();
     }
 }

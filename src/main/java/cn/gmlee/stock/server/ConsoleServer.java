@@ -36,11 +36,14 @@ public class ConsoleServer {
         if (content.startsWith("deal")) {
             return strategyServer.dealHandle();
         }
-        if (content.startsWith("send")) {
-            return strategyServer.sendMessage();
+        if (content.startsWith("user")) {
+            return strategyServer.userMessage();
+        }
+        if (content.startsWith("group")) {
+            return strategyServer.groupMessage();
         }
         if (content.startsWith("?")) {
-            return strategyServer.sendMessage();
+            return strategyServer.userMessage();
         }
         return other(content);
     }
@@ -56,7 +59,7 @@ public class ConsoleServer {
 
     private boolean other(String content) {
         if (ConsoleKit.isStock(content)) {
-            return strategyServer.sendMessage();
+            return strategyServer.userMessage();
         }
         if (BoolUtil.isDigit(content)) {
             System.out.println("你想查股票吗?请输入正确的股票代码!");

@@ -6,13 +6,11 @@ import cn.gmlee.tools.base.mod.Kv;
 import cn.gmlee.tools.base.util.BoolUtil;
 import cn.gmlee.tools.base.util.HttpUtil;
 import cn.gmlee.tools.base.util.JsonUtil;
+import cn.gmlee.tools.base.util.PageUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -67,8 +65,8 @@ public class FeiShuSender {
     /**
      * 发送消息
      */
-    public static void sendGroup(String chatId, Map map, List<Map>... list) {
-        if (BoolUtil.isEmpty(list)) {
+    public static void sendGroup(String chatId, Map map, List<Map> maps) {
+        if (BoolUtil.isEmpty(maps)) {
             return;
         }
         String token = FeiShuKit.getToken();
@@ -78,9 +76,25 @@ public class FeiShuSender {
         Template template = new Template();
         Variable variable = template.getData();
         variable.setTemplate_id("AAqjjVphSBXwR");//群聊模版
-        for (int i = 0; i < list.length; i++) {
-            List<Map> maps = list[i];
-            map.put("list" + i, maps);
+        List<List<Map>> rows = PageUtil.splitSize(maps, 4);
+        List<Map> list = new ArrayList<>();
+        map.put("list", list);
+        for (int i = 0; i < rows.size(); i++) {
+            Map row = new HashMap();
+            List<Map> cols = rows.get(i);
+            for (int j = 1; j <= cols.size(); j++) {
+                Map col = cols.get(j - 1);
+                Object code = col.get("code");
+                Object name = col.get("name");
+                Object color = col.get("color");
+                Object url = col.get("url");
+                col.clear();
+                row.put("code" + j, code);
+                row.put("name" + j, name);
+                row.put("color" + j, color);
+                row.put("url" + j, url);
+            }
+            list.add(row);
         }
         variable.setTemplate_variable(map);
         body.setContent(JsonUtil.toJson(template));
