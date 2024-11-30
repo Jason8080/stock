@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,7 +20,7 @@ import java.util.Map;
 @Slf4j
 public class FeiShuSender {
 
-    private static String sendMessagesApi = "https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=user_id";
+    private static String sendMessagesApi = "https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=%s";
 
     @Data
     public static class Body {
@@ -37,14 +38,14 @@ public class FeiShuSender {
 
     @Data
     public static class Variable {
-        private String template_id = "AAqjgLzYIBxuh";
+        private String template_id;
         private Map template_variable = new HashMap();
     }
 
     /**
      * 发送消息
      */
-    public static void send(String uid, Map... maps) {
+    public static void sendUser(String uid, Map... maps) {
         if (BoolUtil.isEmpty(maps)) {
             return;
         }
@@ -55,10 +56,35 @@ public class FeiShuSender {
             body.setReceive_id(uid);
             Template template = new Template();
             Variable variable = template.getData();
+            variable.setTemplate_id("AAqjgLzYIBxuh");//单聊模版
             variable.setTemplate_variable(map);
             body.setContent(JsonUtil.toJson(template));
-            HttpResult httpResult = HttpUtil.post(sendMessagesApi, body, headers);
+            HttpResult httpResult = HttpUtil.post(String.format(sendMessagesApi, "user_id"), body, headers);
             log.info(httpResult.byteResponseBody2String());
         });
+    }
+
+    /**
+     * 发送消息
+     */
+    public static void sendGroup(String chatId, Map map, List<Map>... list) {
+        if (BoolUtil.isEmpty(list)) {
+            return;
+        }
+        String token = FeiShuKit.getToken();
+        Kv<String, String>[] headers = KvBuilder.array("Authorization", "Bearer ".concat(token));
+        Body body = new Body();
+        body.setReceive_id(chatId);
+        Template template = new Template();
+        Variable variable = template.getData();
+        variable.setTemplate_id("AAqjjVphSBXwR");//群聊模版
+        for (int i = 0; i < list.length; i++) {
+            List<Map> maps = list[i];
+            map.put("list" + i, maps);
+        }
+        variable.setTemplate_variable(map);
+        body.setContent(JsonUtil.toJson(template));
+        HttpResult httpResult = HttpUtil.post(String.format(sendMessagesApi, "chat_id"), body, headers);
+        log.info(httpResult.byteResponseBody2String());
     }
 }

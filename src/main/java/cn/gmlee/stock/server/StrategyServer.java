@@ -305,7 +305,7 @@ public class StrategyServer {
         if("?".equals(ConsoleKit.getCmd())){
             return;
         }
-        FeiShuSender.send(uid, map);
+        FeiShuSender.sendUser(uid, map);
     }
 
     private Map getVariablesMap(StockStrategy strategy, Stock stock, List<StockStrategyRule> buyRule, List<StockStrategyRule> excludeBuyRule, List<StockStrategyRule> sellRule, List<StockStrategyRule> excludeSellRule) {
