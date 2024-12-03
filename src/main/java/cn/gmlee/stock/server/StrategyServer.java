@@ -122,7 +122,7 @@ public class StrategyServer {
                 entity.setDays((int) LocalDateTimeUtil.between(start, end).toDays());
             });
             entity.setSold(!deal.getSold() && sell); // 标记已卖出
-            entity.setStrategyId(strategy.getId());
+            entity.setStrategyId(deal.getStrategyId());
             return entity;
         }
         return null;
@@ -213,11 +213,11 @@ public class StrategyServer {
         // 卖出规则准备
         List<StockStrategyRule> sellRule = groupMap.get(-1);
         List<StockStrategyRule> excludeSellRule = groupMap.get(-2);
-        // 数据储备日期
-        List<Stock2024> list = stock2024Service.list(Wrappers.<Stock2024>lambdaQuery().select(Stock2024::getDate).groupBy(Stock2024::getDate));
         if (BoolUtil.isEmpty(ConsoleKit.getStrategyId())) {
             return oneDayHandle(TimeUtil.getCurrentDatetime(XTime.DAY_NONE), strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule);
         }
+        // 数据储备日期
+        List<Stock2024> list = stock2024Service.list(Wrappers.<Stock2024>lambdaQuery().select(Stock2024::getDate).groupBy(Stock2024::getDate));
         list.stream().map(Stock2024::getDate).filter(BoolUtil::notEmpty).forEach(date -> oneDayHandle(date, strategy, buyRule, excludeBuyRule, sellRule, excludeSellRule));
         return true;
     }
