@@ -24,12 +24,37 @@ public class CustomVariableKit {
         }
         // 添加实心
         addSxl(stock, stockMap);
+        // 添加委率
+        addWbl(stock, stockMap);
+        // 添加开幅
+        addKfl(stock, stockMap);
         // 添加离天
         addLtl(stock, stockMap);
         // 添加离地
         addLdl(stock, stockMap);
         // 添加年位
         addNwz(stock, stockMap);
+    }
+
+    private static void addWbl(Stock stock, Map<String, Object> stockMap) {
+        // 委比率 = 买盘 - 买盘 / 买盘 + 卖盘
+        BigDecimal buyVolume = BigDecimalUtil.get(stock.getBuyVolume());
+        BigDecimal sellVolume = BigDecimalUtil.get(stock.getSellVolume());
+        BigDecimal jl = BigDecimalUtil.subtract(buyVolume, sellVolume); // 距离
+        BigDecimal xc = BigDecimalUtil.add(buyVolume, buyVolume); // 线长
+        BigDecimal result = BigDecimalUtil.multiply(BigDecimalUtil.divide(jl, xc), 100);
+        stockMap.put("委率", result.setScale(2, RoundingMode.HALF_UP));
+    }
+
+    private static void addKfl(Stock stock, Map<String, Object> stockMap) {
+        // 开幅率 = 今开 - 昨收 / 涨停 - 昨收
+        BigDecimal openPrice = BigDecimalUtil.get(stock.getOpenPrice());
+        BigDecimal previousClose = BigDecimalUtil.get(stock.getPreviousClose());
+        BigDecimal upperPrice = BigDecimalUtil.get(stock.getUpperPrice());
+        BigDecimal jl = BigDecimalUtil.subtract(openPrice, previousClose); // 距离
+        BigDecimal xc = BigDecimalUtil.subtract(upperPrice, previousClose); // 线长
+        BigDecimal result = BigDecimalUtil.multiply(BigDecimalUtil.divide(jl, xc), 100);
+        stockMap.put("开幅", result.setScale(2, RoundingMode.HALF_UP));
     }
 
     private static void addNwz(Stock stock, Map<String, Object> stockMap) {
