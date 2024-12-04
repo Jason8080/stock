@@ -309,7 +309,7 @@ public class StrategyServer {
     private Map getVariablesMap(StockStrategy strategy, Stock stock, List<StockStrategyRule> buyRule, List<StockStrategyRule> excludeBuyRule, List<StockStrategyRule> sellRule, List<StockStrategyRule> excludeSellRule) {
         Map<String, Object> stockMap = ClassUtil.generateCurrentMap(stock);
         CustomVariableKit.add(stock, stockMap);
-        QuickUtil.eq(ConsoleKit.getCmd(), "?", () -> System.out.println(JsonUtil.format(stockMap)));
+        QuickUtil.eq(ConsoleKit.getCmd(), "?", () -> System.out.println(stockMap));
         // 交易规则 and 关系、(排除)交易规则 or 关系
         boolean buy = isDeal(stockMap, buyRule, excludeBuyRule);
         boolean sell = isDeal(stockMap, sellRule, excludeSellRule);
