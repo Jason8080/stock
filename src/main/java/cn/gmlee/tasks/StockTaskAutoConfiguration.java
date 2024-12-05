@@ -80,7 +80,7 @@ public class StockTaskAutoConfiguration {
     /**
      * 群发量化消息
      */
-    @Scheduled(cron = "0 50,53 14 ? * 1-5")
+    @Scheduled(cron = "0 50,53,57 14 ? * 1-5")
     public void groupMessage() {
         if (BoolUtil.notEmpty(db)) {
             log.warn("当前持久化采用的是: {}", db);
