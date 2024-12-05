@@ -55,6 +55,7 @@
         COUNT(*) AS '总数(只)',
         SUM(d.rise_ratio) AS '盈亏%',
         SUM(CASE WHEN d.rise_ratio > 0 THEN 1 ELSE 0 END) AS '盈利(只)',
+        ROUND(SUM(d.rise_ratio) / COUNT(*), 2) AS '均盈%',
         ROUND(SUM(CASE WHEN d.rise_ratio > 0 THEN 1 ELSE 0 END) / COUNT(*) * 100, 2) AS '胜率%'
         FROM stock_strategy_deal d LEFT JOIN stock_strategy s on d.strategy_id = s.id
         <where>
