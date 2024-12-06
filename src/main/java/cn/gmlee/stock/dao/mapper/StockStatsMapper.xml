@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.gmlee.stock.dao.mapper.StockStatsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.gmlee.stock.dao.entity.StockStats">
+        <id column="date" property="date" />
+        <result column="strategy_id" property="strategyId" />
+        <result column="sold" property="sold" />
+        <result column="total" property="total" />
+        <result column="qty" property="qty" />
+        <result column="profit_num" property="profitNum" />
+        <result column="loss_num" property="lossNum" />
+        <result column="proportion" property="proportion" />
+        <result column="rate" property="rate" />
+        <result column="avg_rate" property="avgRate" />
+        <result column="win_rate" property="winRate" />
+        <result column="loss_rate" property="lossRate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        date, strategy_id, sold, total, qty, profit_num, loss_num, proportion, rate, avg_rate, win_rate, loss_rate
+    </sql>
+
+</mapper>
