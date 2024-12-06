@@ -23,4 +23,36 @@
         date, strategy_id, sold, total, qty, profit_num, loss_num, proportion, rate, avg_rate, win_rate, loss_rate
     </sql>
 
+    <!-- 统计查询 -->
+    <select id="stats" resultMap="BaseResultMap">
+        SELECT
+        CURDATE() AS date,
+        s.id AS strategy_id,
+        (CASE WHEN d.sold THEN 1 WHEN !d.sold THEN 0 END) AS sold,
+        t.total as total, COUNT(*) AS qty,
+        SUM(CASE WHEN d.rise_ratio > 0 THEN 1 ELSE 0 END) AS profit_num,
+        SUM(CASE WHEN d.rise_ratio > 0 THEN 0 ELSE 1 END) AS loss_num,
+        ROUND(COUNT(*) / total * 100, 2) AS proportion,
+        SUM(d.rise_ratio) AS rate,
+        ROUND(SUM(d.rise_ratio) / COUNT(*), 2) AS avg_rate,
+        ROUND(SUM(CASE WHEN d.rise_ratio > 0 THEN 1 ELSE 0 END) / COUNT(*) * 100, 2) AS win_rate,
+        ROUND(SUM(CASE WHEN d.rise_ratio > 0 THEN 0 ELSE 1 END) / COUNT(*) * 100, 2) AS loss_rate
+        FROM stock_strategy_deal d LEFT JOIN stock_strategy s on d.strategy_id = s.id
+        LEFT JOIN (select strategy_id, count(1) as total from stock_strategy_deal group by strategy_id) t on t.strategy_id = d.strategy_id
+        <where>
+            <if test="sold!=null">
+                and d.sold = #{sold}
+            </if>
+            <if test="start!=null and end!=null">
+                and d.date between #{start} and #{end}
+            </if>
+            <if test="ids!=null and ids.length > 0">
+                and d.strategy_id in
+                <foreach collection="ids" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY d.strategy_id
+    </select>
 </mapper>
