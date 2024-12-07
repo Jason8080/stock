@@ -98,7 +98,7 @@ public class StrategyServer {
         boolean buy = isDeal(stockMap, buyRule, excludeBuyRule);
         boolean sell = isDeal(stockMap, sellRule, excludeSellRule);
         boolean stop = isDeal(stockMap, stopRule, excludeStopRule);
-        if (deal == null && buy && !stop) {
+        if (deal == null && buy) {
             StockStrategyDeal entity = new StockStrategyDeal();
             entity.setDate(stock2024.getDate());
             entity.setCode(stock2024.getCode());
@@ -134,6 +134,9 @@ public class StrategyServer {
     }
 
     private boolean isDeal(Map<String, Object> stockMap, List<StockStrategyRule> rules, List<StockStrategyRule> excludeRules) {
+        if (BoolUtil.isEmpty(rules)) {
+            return false;
+        }
         for (StockStrategyRule rule : NullUtil.get(rules)) {
             String javascript = substitutionVariable(rule.getRule(), stockMap);
             Object eval = ScriptUtil.eval(javascript, true);
@@ -436,7 +439,7 @@ public class StrategyServer {
         boolean buy = isDeal(stockMap, buyRule, excludeBuyRule);
         boolean sell = isDeal(stockMap, sellRule, excludeSellRule);
         boolean stop = isDeal(stockMap, stopRule, excludeStopRule);
-        if (deal == null && buy && !stop) {
+        if (deal == null && buy) {
             Map map = new HashMap();
             map.put("code", stock.getCode());
             map.put("name", stock.getName());
