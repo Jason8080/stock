@@ -396,7 +396,7 @@ public class StrategyServer {
         map.put("strategyAuthor", strategy.getAuthor());
         // 准备飞书消息
         List<Map> maps = paging(strategy, stocks, buyRule, excludeBuyRule, sellRule, excludeSellRule, stopRule, excludeStopRule, stopRule, excludeStopRule);
-        FeiShuSender.sendGroup("oc_8e22f38a15b9e892bd4f9e07ccbac416", map, maps);
+        FeiShuSender.sendGroup(strategy.getV(), map, maps);
         return true;
     }
 

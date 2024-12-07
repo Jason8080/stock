@@ -62,11 +62,17 @@ public class FeiShuSender {
         });
     }
 
+    private static final Map<Integer, String> vMap = KvBuilder.map(
+            1, "oc_8e22f38a15b9e892bd4f9e07ccbac416",
+            2, "oc_891a01a7afb5a037fca08ff8844a8078"
+    );
+
     /**
      * 发送消息
      */
-    public static void sendGroup(String chatId, Map map, List<Map> maps) {
-        if (BoolUtil.isEmpty(maps)) {
+    public static void sendGroup(Integer v, Map map, List<Map> maps) {
+        String chatId = vMap.get(v);
+        if (BoolUtil.isEmpty(maps) || BoolUtil.isEmpty(chatId)) {
             return;
         }
         String token = FeiShuKit.getToken();
