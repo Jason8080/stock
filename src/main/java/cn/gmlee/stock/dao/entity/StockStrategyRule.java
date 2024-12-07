@@ -30,7 +30,7 @@ public class StockStrategyRule implements Serializable {
     private Integer strategyId;
 
     /**
-     * -2(排除)卖出 -1卖出 0观望 1买入 2(排除)买入
+     * -3(排除)止盈止损 -2(排除)卖出 -1卖出 0观望 1买入 2(排除)买入 3止盈止损
      */
     @Column
     private Integer transType;

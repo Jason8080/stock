@@ -1,7 +1,9 @@
 package cn.gmlee.stock.util;
 
+import cn.gmlee.stock.dao.entity.StockStrategyDeal;
 import cn.gmlee.stock.mod.Stock;
 import cn.gmlee.tools.base.util.BigDecimalUtil;
+import cn.gmlee.tools.base.util.NullUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -11,6 +13,27 @@ import java.util.Map;
  * The type Custom variable kit.
  */
 public class CustomVariableKit {
+
+    /**
+     * Add.
+     *
+     * @param deal     the deal
+     * @param stockMap the stock map
+     */
+    public static void add(StockStrategyDeal deal, Map<String, Object> stockMap) {
+        if (stockMap == null) {
+            return;
+        }
+        if (deal == null) {
+            deal = new StockStrategyDeal();
+        }
+        // 添加盈亏
+        addYk(deal, stockMap);
+    }
+
+    private static void addYk(StockStrategyDeal deal, Map<String, Object> stockMap) {
+        stockMap.put("盈亏", NullUtil.get(deal.getRiseRatio(), BigDecimal.ZERO));
+    }
 
     /**
      * Add.
