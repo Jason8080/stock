@@ -176,7 +176,7 @@ public class StrategyServer {
         // 策略数据准备
         List<StockStrategy> list = stockStrategyService.list(Wrappers.<StockStrategy>lambdaQuery()
                 .eq(BoolUtil.notEmpty(ConsoleKit.getStrategyId()), StockStrategy::getId, ConsoleKit.getStrategyId())
-                .eq(StockStrategy::getStatus, 1)
+                .eq(BoolUtil.isEmpty(ConsoleKit.getStrategyId()), StockStrategy::getStatus, 1)
         );
         Map<Integer, StockStrategy> strategyMap = list.stream().collect(Collectors.toMap(StockStrategy::getId, Function.identity()));
         if (BoolUtil.isEmpty(strategyMap)) {
