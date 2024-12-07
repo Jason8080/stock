@@ -32,7 +32,12 @@ public class CustomVariableKit {
     }
 
     private static void addYk(StockStrategyDeal deal, Map<String, Object> stockMap) {
-        stockMap.put("盈亏", NullUtil.get(deal.getRiseRatio(), BigDecimal.ZERO));
+        // 盈利 = 当前价格 - 买入价格 / 买入价格
+        BigDecimal current = BigDecimalUtil.get(stockMap.get("价格"));
+        BigDecimal buy = NullUtil.get(deal.getPrice(), current);
+        BigDecimal jl = BigDecimalUtil.subtract(current, buy);
+        BigDecimal result = BigDecimalUtil.multiply(BigDecimalUtil.divide(jl, buy), 100);
+        stockMap.put("盈亏", BigDecimal.ZERO.compareTo(result) != 0 ? result.setScale(2, RoundingMode.HALF_UP) : BigDecimal.ZERO);
     }
 
     /**

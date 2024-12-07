@@ -126,7 +126,7 @@ public class StrategyServer {
                 Date end = TimeUtil.parseTime(stock2024.getDate(), XTime.DAY_NONE);
                 entity.setDays((int) LocalDateTimeUtil.between(start, end).toDays());
             });
-            entity.setSold(!deal.getSold() && (sell || stop)); // 标记已卖出
+            entity.setSold((!deal.getSold() && sell) || stop); // 标记已卖出
             entity.setStrategyId(deal.getStrategyId());
             return entity;
         }
