@@ -282,18 +282,18 @@ public class StrategyServer {
         List<StockStrategyRule> sellRule = groupMap.get(-1);
         List<StockStrategyRule> excludeSellRule = groupMap.get(-2);
         // 统计数据准备
-        StockStats soldStats = stockStatsService.stats(null, null, true, strategy.getId());
-        StockStats lockStats = stockStatsService.stats(null, null, false, strategy.getId());
+        List<StockStats> soldStats = stockStatsService.stats(null, null, true, strategy.getId());
+        List<StockStats> lockStats = stockStatsService.stats(null, null, false, strategy.getId());
         System.out.println(String.format("------ %sv%s ------", strategy.getName(), strategy.getV()));
         System.out.println(soldStats);
         System.out.println(lockStats);
         // 准备飞书消息
         Map map = new HashMap();
-        map.put("winRate", soldStats.getWinRate());
-        map.put("profitRate", soldStats.getRate());
-        map.put("lockRatio", lockStats.getProportion());
-        map.put("lockWinRate", lockStats.getWinRate());
-        map.put("lockProfitRate", lockStats.getRate());
+        map.put("winRate", BoolUtil.notEmpty(soldStats) ? soldStats.get(0).getWinRate() : "100");
+        map.put("profitRate", BoolUtil.notEmpty(soldStats) ? soldStats.get(0).getRate() : "100");
+        map.put("lockRatio", BoolUtil.notEmpty(lockStats) ? lockStats.get(0).getProportion() : "0");
+        map.put("lockWinRate", BoolUtil.notEmpty(lockStats) ? lockStats.get(0).getWinRate() : "100");
+        map.put("lockProfitRate", BoolUtil.notEmpty(lockStats) ? lockStats.get(0).getRate() : "100");
         map.put("strategyName", String.format("%sv%s", strategy.getName(), strategy.getV()));
         map.put("strategyAuthor", strategy.getAuthor());
         List<Map> list = subscribes.stream().map(code ->
@@ -365,18 +365,18 @@ public class StrategyServer {
         List<StockStrategyRule> sellRule = groupMap.get(-1);
         List<StockStrategyRule> excludeSellRule = groupMap.get(-2);
         // 统计数据准备
-        StockStats soldStats = stockStatsService.stats(null, null, true, strategy.getId());
-        StockStats lockStats = stockStatsService.stats(null, null, false, strategy.getId());
+        List<StockStats> soldStats = stockStatsService.stats(null, null, true, strategy.getId());
+        List<StockStats> lockStats = stockStatsService.stats(null, null, false, strategy.getId());
         System.out.println(String.format("------ %sv%s ------", strategy.getName(), strategy.getV()));
         System.out.println(soldStats);
         System.out.println(lockStats);
         // 准备飞书消息
         Map map = new HashMap();
-        map.put("winRate", soldStats != null ? soldStats.getWinRate() : "100");
-        map.put("profitRate", soldStats != null ? soldStats.getRate() : "100");
-        map.put("lockRatio", lockStats != null ? lockStats.getProportion() : "0");
-        map.put("lockWinRate", lockStats != null ? lockStats.getWinRate() : "100");
-        map.put("lockProfitRate", lockStats != null ? lockStats.getRate() : "100");
+        map.put("winRate", BoolUtil.notEmpty(soldStats) ? soldStats.get(0).getWinRate() : "100");
+        map.put("profitRate", BoolUtil.notEmpty(soldStats) ? soldStats.get(0).getRate() : "100");
+        map.put("lockRatio", BoolUtil.notEmpty(lockStats) ? lockStats.get(0).getProportion() : "0");
+        map.put("lockWinRate", BoolUtil.notEmpty(lockStats) ? lockStats.get(0).getWinRate() : "100");
+        map.put("lockProfitRate", BoolUtil.notEmpty(lockStats) ? lockStats.get(0).getRate() : "100");
         map.put("strategyName", String.format("%sv%s", strategy.getName(), strategy.getV()));
         map.put("strategyAuthor", strategy.getAuthor());
         // 准备飞书消息

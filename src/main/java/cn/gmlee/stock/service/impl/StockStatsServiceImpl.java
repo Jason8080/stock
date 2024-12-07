@@ -6,7 +6,9 @@ import cn.gmlee.stock.service.StockStatsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -19,7 +21,12 @@ import java.util.Date;
 @Service
 public class StockStatsServiceImpl extends ServiceImpl<StockStatsMapper, StockStats> implements StockStatsService {
     @Override
-    public StockStats stats(Date start, Date end, Boolean sold, Integer... ids) {
+    public List<StockStats> stats(Date start, Date end, Boolean sold, Integer... ids) {
         return baseMapper.stats(start, end, sold, ids);
+    }
+
+    @Override
+    public void insertOrUpdateBatch(Collection<StockStats> entities) {
+        baseMapper.insertOrUpdateBatch(entities);
     }
 }

@@ -55,4 +55,30 @@
         </where>
         GROUP BY d.strategy_id
     </select>
+
+    <insert id="insertOrUpdateBatch">
+        INSERT INTO stock_stats (
+        `date`, `strategy_id`, `sold`, `total`, `qty`,
+        `profit_num`, `loss_num`, `proportion`, `rate`, `avg_rate`,
+        `win_rate`, `loss_rate`
+        )
+        VALUES
+        <foreach collection="entities" item="item" separator=",">
+            (
+            #{item.date}, #{item.strategyId}, #{item.sold}, #{item.total}, #{item.qty},
+            #{item.profitNum}, #{item.lossNum}, #{item.proportion}, #{item.rate}, #{item.avgRate},
+            #{item.winRate}, #{item.lossRate}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        `total` = VALUES(`total`),
+        `qty` = VALUES(`qty`),
+        `profit_num` = VALUES(`profit_num`),
+        `loss_num` = VALUES(`loss_num`),
+        `proportion` = VALUES(`proportion`),
+        `rate` = VALUES(`rate`),
+        `avg_rate` = VALUES(`avg_rate`),
+        `win_rate` = VALUES(`win_rate`),
+        `loss_rate` = VALUES(`loss_rate`);
+    </insert>
 </mapper>

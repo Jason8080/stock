@@ -16,6 +16,8 @@ public class ConsoleServer {
 
     private final StockServer stockServer;
 
+    private final StatsServer statsServer;
+
     private final StrategyServer strategyServer;
 
     /**
@@ -41,6 +43,9 @@ public class ConsoleServer {
         }
         if (content.startsWith("group")) {
             return strategyServer.groupMessage();
+        }
+        if (content.startsWith("stats")) {
+            return statsServer.statsHandle();
         }
         if (content.startsWith("?")) {
             return strategyServer.userMessage();
