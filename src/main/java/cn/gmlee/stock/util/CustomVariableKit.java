@@ -29,6 +29,12 @@ public class CustomVariableKit {
         }
         // 添加盈亏
         addYk(deal, stockMap);
+        // 添加天数
+        addTs(deal, stockMap);
+    }
+
+    private static void addTs(StockStrategyDeal deal, Map<String, Object> stockMap) {
+        stockMap.put("天数", NullUtil.get(deal.getDays(), 0));
     }
 
     private static void addYk(StockStrategyDeal deal, Map<String, Object> stockMap) {
