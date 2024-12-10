@@ -39,8 +39,11 @@ public class ListStrategyVo implements Serializable {
         private Long total;// 总量
         private Long sold;// 卖出
         private Long lock;// 持仓
-        private BigDecimal rate;// 涨幅
-        private StockStats soldStats;// 卖出统计
-        private StockStats lockStats;// 持仓统计
+        private BigDecimal rate;// 盈亏
+        private BigDecimal avgRate;// 均盈
+        private BigDecimal winRate; // 胜率
+        private BigDecimal proportion; // 占比
+        private StockStats soldStats = new StockStats();// 卖出统计
+        private StockStats lockStats = new StockStats();// 持仓统计
     }
 }

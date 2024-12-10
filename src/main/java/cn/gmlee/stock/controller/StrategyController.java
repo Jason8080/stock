@@ -1,13 +1,16 @@
 package cn.gmlee.stock.controller;
 
 import cn.gmlee.stock.controller.vo.ListStrategyVo;
+import cn.gmlee.stock.dao.entity.StockStats;
 import cn.gmlee.stock.dao.entity.StockStrategy;
+import cn.gmlee.stock.service.StockStatsService;
 import cn.gmlee.stock.service.StockStrategyService;
 import cn.gmlee.tools.base.entity.Key;
 import cn.gmlee.tools.base.mod.PageRequest;
 import cn.gmlee.tools.base.mod.PageResponse;
 import cn.gmlee.tools.base.mod.R;
 import cn.gmlee.tools.base.util.BeanUtil;
+import cn.gmlee.tools.base.util.BigDecimalUtil;
 import cn.gmlee.tools.base.util.BoolUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +32,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("strategy")
 public class StrategyController {
+
+    private final StockStatsService stockStatsService;
 
     private final StockStrategyService stockStrategyService;
 
@@ -54,7 +61,34 @@ public class StrategyController {
     private ListStrategyVo toListStrategy(StockStrategy ss) {
         ListStrategyVo vo = BeanUtil.convert(ss, ListStrategyVo.class);
         ListStrategyVo.Props props = new ListStrategyVo.Props();
-        
+        List<StockStats> soldStats = stockStatsService.stats(null, null, true, ss.getId());
+        List<StockStats> lockStats = stockStatsService.stats(null, null, false, ss.getId());
+        BigDecimal sumRate = BigDecimal.ZERO;
+        BigDecimal sumAvgRate = BigDecimal.ZERO;
+        BigDecimal winRate = BigDecimal.ZERO;
+        if(BoolUtil.notEmpty(soldStats)){
+            StockStats stockStats = soldStats.get(0);
+            props.setTotal(stockStats.getTotal());
+            props.setSold(stockStats.getQty());
+            props.setRate(stockStats.getRate());
+            props.setAvgRate(stockStats.getAvgRate());
+            props.setSoldStats(stockStats);
+            sumRate.add(stockStats.getRate());
+            sumAvgRate.add(stockStats.getAvgRate());
+            winRate.add(stockStats.getAvgRate());
+        }
+        if(BoolUtil.notEmpty(lockStats)){
+            StockStats stockStats = lockStats.get(0);
+            props.setLock(stockStats.getQty());
+            props.setLockStats(stockStats);
+            sumRate.add(stockStats.getRate());
+            sumAvgRate.add(stockStats.getAvgRate());
+            winRate.add(stockStats.getAvgRate());
+        }
+        props.setRate(sumRate);
+        props.setProportion(BigDecimal.valueOf(100));
+        props.setAvgRate(BigDecimalUtil.divide(sumAvgRate, 2).setScale(2, RoundingMode.HALF_UP));
+        props.setWinRate(BigDecimalUtil.divide(winRate, 2).setScale(2, RoundingMode.HALF_UP));
         vo.setProps(props);
         return vo;
     }
