@@ -1,0 +1,61 @@
+package cn.gmlee.stock.controller;
+
+import cn.gmlee.stock.controller.vo.ListStrategyVo;
+import cn.gmlee.stock.dao.entity.StockStrategy;
+import cn.gmlee.stock.service.StockStrategyService;
+import cn.gmlee.tools.base.entity.Key;
+import cn.gmlee.tools.base.mod.PageRequest;
+import cn.gmlee.tools.base.mod.PageResponse;
+import cn.gmlee.tools.base.mod.R;
+import cn.gmlee.tools.base.util.BeanUtil;
+import cn.gmlee.tools.base.util.BoolUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * 策略接口.
+ */
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("strategy")
+public class StrategyController {
+
+    private final StockStrategyService stockStrategyService;
+
+    /**
+     * 策略列表.
+     *
+     * @param pr  the pr
+     * @param key the key
+     * @return the r
+     */
+    @GetMapping("list")
+    public R<PageResponse> list(PageRequest pr, Key key) {
+        IPage page = new Page(pr.current, pr.size);
+        IPage<StockStrategy> iPage = stockStrategyService.page(page, Wrappers.<StockStrategy>lambdaQuery()
+                .and(BoolUtil.notEmpty(key.uniqueKey), wrapper -> wrapper
+                        .like(StockStrategy::getName, key.uniqueKey)
+                        .or()
+                        .like(StockStrategy::getAuthor, key.uniqueKey))
+                .eq(StockStrategy::getStatus, 1)
+        );
+        List<ListStrategyVo> vos = iPage.getRecords().stream().map(this::toListStrategy).collect(Collectors.toList());
+        return R.OK.newly(PageResponse.of(pr, iPage.getTotal(), vos));
+    }
+
+    private ListStrategyVo toListStrategy(StockStrategy ss) {
+        ListStrategyVo vo = BeanUtil.convert(ss, ListStrategyVo.class);
+        ListStrategyVo.Props props = new ListStrategyVo.Props();
+        
+        vo.setProps(props);
+        return vo;
+    }
+}
