@@ -48,6 +48,7 @@ public class StockStrategyDeal implements Serializable {
     private BigDecimal currentPrice;
 
     @Column
+    @TableField("`current_date`")
     private String currentDate;
 
     @Column
