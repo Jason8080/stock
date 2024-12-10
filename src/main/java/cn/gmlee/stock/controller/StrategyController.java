@@ -58,6 +58,27 @@ public class StrategyController {
         return R.OK.newly(PageResponse.of(pr, iPage.getTotal(), vos));
     }
 
+    /**
+     * 交易列表.
+     *
+     * @param pr  the pr
+     * @param key the key
+     * @return the r
+     */
+    @GetMapping("deal")
+    public R<PageResponse> deal(PageRequest pr, Key key) {
+        IPage page = new Page(pr.current, pr.size);
+        IPage<StockStrategy> iPage = stockStrategyService.page(page, Wrappers.<StockStrategy>lambdaQuery()
+                .and(BoolUtil.notEmpty(key.uniqueKey), wrapper -> wrapper
+                        .like(StockStrategy::getName, key.uniqueKey)
+                        .or()
+                        .like(StockStrategy::getAuthor, key.uniqueKey))
+                .eq(StockStrategy::getStatus, 1)
+        );
+        List<ListStrategyVo> vos = iPage.getRecords().stream().map(this::toListStrategy).collect(Collectors.toList());
+        return R.OK.newly(PageResponse.of(pr, iPage.getTotal(), vos));
+    }
+
     private ListStrategyVo toListStrategy(StockStrategy ss) {
         ListStrategyVo vo = BeanUtil.convert(ss, ListStrategyVo.class);
         ListStrategyVo.Props props = new ListStrategyVo.Props();
@@ -73,17 +94,17 @@ public class StrategyController {
             props.setRate(stockStats.getRate());
             props.setAvgRate(stockStats.getAvgRate());
             props.setSoldStats(stockStats);
-            sumRate.add(stockStats.getRate());
-            sumAvgRate.add(stockStats.getAvgRate());
-            winRate.add(stockStats.getAvgRate());
+            sumRate = sumRate.add(stockStats.getRate());
+            sumAvgRate = sumAvgRate.add(stockStats.getAvgRate());
+            winRate = winRate.add(stockStats.getWinRate());
         }
         if(BoolUtil.notEmpty(lockStats)){
             StockStats stockStats = lockStats.get(0);
             props.setLock(stockStats.getQty());
             props.setLockStats(stockStats);
-            sumRate.add(stockStats.getRate());
-            sumAvgRate.add(stockStats.getAvgRate());
-            winRate.add(stockStats.getAvgRate());
+            sumRate = sumRate.add(stockStats.getRate());
+            sumAvgRate = sumAvgRate.add(stockStats.getAvgRate());
+            winRate = winRate.add(stockStats.getWinRate());
         }
         props.setRate(sumRate);
         props.setProportion(BigDecimal.valueOf(100));
