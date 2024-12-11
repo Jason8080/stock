@@ -76,7 +76,7 @@ public class StrategyController {
      * @return the r
      */
     @GetMapping("deal")
-    public R<PageResponse> deal(PageRequest pr, Id id, Key key, Status status) {
+    public R<PageResponse> deal(PageRequest pr, Key key, Status status) {
         IPage page = new Page(pr.current, pr.size);
         IPage<StockStrategyDeal> iPage = stockStrategyDealService.page(page, Wrappers.<StockStrategyDeal>lambdaQuery()
                 .and(BoolUtil.notEmpty(key.uniqueKey), wrapper -> wrapper
@@ -84,12 +84,12 @@ public class StrategyController {
                         .or()
                         .like(StockStrategyDeal::getCode, key.uniqueKey)
                 )
-                .and(wrapper -> wrapper
+                .and(BoolUtil.notNull(status.status), wrapper -> wrapper
                         .or(w -> w.eq(StockStrategyDeal::getDate, TimeUtil.getCurrentDatetime(XTime.DAY_NONE)).eq(StockStrategyDeal::getSold, false))
                         .or(w -> w.eq(StockStrategyDeal::getCurrentDate, TimeUtil.getCurrentDatetime(XTime.DAY_NONE)).eq(StockStrategyDeal::getSold, true))
                 )
                 .eq(BoolUtil.notNull(status.status), StockStrategyDeal::getSold, status.status)
-                .eq(StockStrategyDeal::getStrategyId, id.id)
+                .eq(StockStrategyDeal::getStrategyId, status.id)
         );
         List<ListStrategyDealVo> vos = iPage.getRecords().stream().map(this::toListStrategyDeal).collect(Collectors.toList());
         return R.OK.newly(PageResponse.of(pr, iPage.getTotal(), vos));
