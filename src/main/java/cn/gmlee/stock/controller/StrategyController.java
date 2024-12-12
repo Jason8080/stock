@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -76,7 +77,7 @@ public class StrategyController {
      * @return the r
      */
     @GetMapping("deal")
-    public R<PageResponse> deal(PageRequest pr, Key key, Status status) {
+    public R<PageResponse> deal(PageRequest pr, Key key, @Valid Status status) {
         IPage page = new Page(pr.current, pr.size);
         IPage<StockStrategyDeal> iPage = stockStrategyDealService.page(page, Wrappers.<StockStrategyDeal>lambdaQuery()
                 .and(BoolUtil.notEmpty(key.uniqueKey), wrapper -> wrapper
