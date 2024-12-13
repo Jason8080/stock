@@ -94,6 +94,7 @@ public class StockTaskAutoConfiguration {
     /**
      * 群发量化消息
      */
+    @Scheduled(cron = "30 0 15 ? * 1-5")
     @Scheduled(cron = "0 50,53,56 14 ? * 1-5")
     public void groupMessage() {
         if (BoolUtil.notEmpty(db)) {
