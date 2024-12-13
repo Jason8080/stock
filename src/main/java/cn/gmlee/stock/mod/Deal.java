@@ -22,6 +22,6 @@ public class Deal implements Serializable {
     private Boolean sold;
     private String soldCn = "观望"; // 买入、卖出
     private Stock stock;
-    private StockStats soldStats = new StockStats();// 卖出统计
-    private StockStats lockStats = new StockStats();// 持仓统计
+    private StockStats soldStats;// 卖出统计
+    private StockStats lockStats;// 持仓统计
 }

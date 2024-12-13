@@ -10,5 +10,7 @@ import java.util.List;
 
 @Data
 public class ViewStockDealVo extends Stock implements Serializable {
-    private List<Deal> deals = new ArrayList<>();
+    private List<Deal> buy = new ArrayList<>();
+    private List<Deal> look = new ArrayList<>();
+    private List<Deal> sell = new ArrayList<>();
 }

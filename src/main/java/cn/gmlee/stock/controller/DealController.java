@@ -1,7 +1,6 @@
 package cn.gmlee.stock.controller;
 
 import cn.gmlee.stock.controller.vo.ViewStockDealVo;
-import cn.gmlee.stock.dao.entity.StockStats;
 import cn.gmlee.stock.dao.entity.StockStrategy;
 import cn.gmlee.stock.dao.entity.StockStrategyDeal;
 import cn.gmlee.stock.dao.entity.StockStrategyRule;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -75,22 +73,24 @@ public class DealController {
                 .orderByAsc(StockStrategyDeal::getDate)
         );
         Map<Integer, List<StockStrategyDeal>> dealsMap = deals.stream().collect(Collectors.groupingBy(StockStrategyDeal::getStrategyId));
-        // 统计数据
-        List<StockStats> soldStats = stockStatsService.stats(null, null, true, strategyIds.stream().map(Integer::valueOf).toArray(Integer[]::new));
-        Map<Integer, StockStats> soldStatsMap = soldStats.stream().collect(Collectors.toMap(StockStats::getStrategyId, Function.identity(), (k1, k2) -> k1));
-        List<StockStats> lockStats = stockStatsService.stats(null, null, false, strategyIds.stream().map(Integer::valueOf).toArray(Integer[]::new));
-        Map<Integer, StockStats> lockStatsMap = lockStats.stream().collect(Collectors.toMap(StockStats::getStrategyId, Function.identity(), (k1, k2) -> k1));
         // 信号收集
-        return R.OK.newly(collectSignal(stocks, strategies, ruleMap, dealsMap, soldStatsMap, lockStatsMap));
+        return R.OK.newly(collectSignal(stocks, strategies, ruleMap, dealsMap));
     }
 
-    private List<ViewStockDealVo> collectSignal(List<Stock> stocks, List<StockStrategy> strategies, Map<Integer, List<StockStrategyRule>> ruleMap, Map<Integer, List<StockStrategyDeal>> dealsMap, Map<Integer, StockStats> soldStatsMap, Map<Integer, StockStats> lockStatsMap) {
+    private List<ViewStockDealVo> collectSignal(List<Stock> stocks, List<StockStrategy> strategies, Map<Integer, List<StockStrategyRule>> ruleMap, Map<Integer, List<StockStrategyDeal>> dealsMap) {
         List<ViewStockDealVo> vos = new ArrayList<>();
         for (Stock stock : stocks) {
             ViewStockDealVo vo = BeanUtil.convert(stock, ViewStockDealVo.class);
             for (StockStrategy strategy : strategies) {
-                Deal deal = DealKit.toDeal(strategy, ruleMap, dealsMap, soldStatsMap, lockStatsMap, stock);
-                vo.getDeals().add(deal);
+                Deal deal = DealKit.toDeal(strategy, ruleMap, dealsMap, null, null, stock);
+                deal.setStock(null);
+                if (deal.getSold() == null) {
+                    vo.getLook().add(deal);
+                } else if (deal.getSold()) {
+                    vo.getSell().add(deal);
+                } else if (!deal.getSold()) {
+                    vo.getBuy().add(deal);
+                }
             }
             vos.add(vo);
         }

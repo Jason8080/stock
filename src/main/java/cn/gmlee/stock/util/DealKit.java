@@ -1,10 +1,10 @@
 package cn.gmlee.stock.util;
 
-import cn.gmlee.stock.mod.Deal;
 import cn.gmlee.stock.dao.entity.StockStats;
 import cn.gmlee.stock.dao.entity.StockStrategy;
 import cn.gmlee.stock.dao.entity.StockStrategyDeal;
 import cn.gmlee.stock.dao.entity.StockStrategyRule;
+import cn.gmlee.stock.mod.Deal;
 import cn.gmlee.stock.mod.Stock;
 import cn.gmlee.tools.base.util.BeanUtil;
 import cn.gmlee.tools.base.util.QuickUtil;
@@ -41,8 +41,8 @@ public class DealKit {
         // 策略规则准备
         List<StockStrategyRule> rules = ruleMap.get(strategy.getId());
         Map<Integer, List<StockStrategyRule>> groupMap = rules.stream().collect(Collectors.groupingBy(StockStrategyRule::getTransType));
-        vo.setSoldStats(soldStatsMap.get(strategy.getId()));
-        vo.setLockStats(lockStatsMap.get(strategy.getId()));
+        QuickUtil.notEmpty(soldStatsMap, map -> vo.setSoldStats(map.get(strategy.getId())));
+        QuickUtil.notEmpty(lockStatsMap, map -> vo.setLockStats(map.get(strategy.getId())));
         // 交易信号准备
         List<StockStrategyDeal> deals = dealsMap.get(strategy.getId());
         Map<String, StockStrategyDeal> dealMap = deals.stream().collect(Collectors.toMap(StockStrategyDeal::getCode, Function.identity(), (k1, k2) -> k1));
