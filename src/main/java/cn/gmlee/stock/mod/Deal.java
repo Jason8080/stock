@@ -20,6 +20,7 @@ public class Deal implements Serializable {
     private String author;
     private Integer v;
     private Boolean sold;
+    private String color = "gray";
     private String soldCn = "观望"; // 买入、卖出
     private Stock stock;
     private StockStats soldStats;// 卖出统计
