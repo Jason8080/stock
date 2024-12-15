@@ -36,5 +36,7 @@ public class ListStrategyDealVo implements Serializable {
 
     private Boolean sold;
 
+    private String soldCn = "持仓";
+
     private Integer strategyId;
 }

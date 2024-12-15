@@ -15,6 +15,13 @@ import java.util.List;
  */
 public interface Stock2024Service extends IService<Stock2024> {
     /**
+     * Gets last day.
+     *
+     * @return last day
+     */
+    String lastDay();
+
+    /**
      * Insert or update batch.
      *
      * @param entities the entities

@@ -16,6 +16,13 @@ import java.util.List;
  */
 public interface Stock2024Mapper extends BaseMapper<Stock2024> {
     /**
+     * Gets last day.
+     *
+     * @return the last day
+     */
+    String lastDay();
+
+    /**
      * Insert or update batch.
      *
      * @param entities the entities

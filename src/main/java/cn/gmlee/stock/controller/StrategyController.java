@@ -5,20 +5,19 @@ import cn.gmlee.stock.controller.vo.ListStrategyVo;
 import cn.gmlee.stock.dao.entity.StockStats;
 import cn.gmlee.stock.dao.entity.StockStrategy;
 import cn.gmlee.stock.dao.entity.StockStrategyDeal;
+import cn.gmlee.stock.service.Stock2024Service;
 import cn.gmlee.stock.service.StockStatsService;
 import cn.gmlee.stock.service.StockStrategyDealService;
 import cn.gmlee.stock.service.StockStrategyService;
-import cn.gmlee.tools.base.entity.Id;
 import cn.gmlee.tools.base.entity.Key;
 import cn.gmlee.tools.base.entity.Status;
-import cn.gmlee.tools.base.enums.XTime;
 import cn.gmlee.tools.base.mod.PageRequest;
 import cn.gmlee.tools.base.mod.PageResponse;
 import cn.gmlee.tools.base.mod.R;
 import cn.gmlee.tools.base.util.BeanUtil;
 import cn.gmlee.tools.base.util.BigDecimalUtil;
 import cn.gmlee.tools.base.util.BoolUtil;
-import cn.gmlee.tools.base.util.TimeUtil;
+import cn.gmlee.tools.base.util.QuickUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -40,6 +39,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("strategy")
 public class StrategyController {
+
+    private final Stock2024Service stock2024Service;
 
     private final StockStatsService stockStatsService;
 
@@ -64,6 +65,7 @@ public class StrategyController {
                         .like(StockStrategy::getAuthor, key.uniqueKey)
                 )
                 .eq(StockStrategy::getStatus, 1)
+                .orderByAsc(StockStrategy::getId, StockStrategy::getV)
         );
         List<ListStrategyVo> vos = iPage.getRecords().stream().map(this::toListStrategy).collect(Collectors.toList());
         return R.OK.newly(PageResponse.of(pr, iPage.getTotal(), vos));
@@ -79,6 +81,7 @@ public class StrategyController {
     @GetMapping("deal")
     public R<PageResponse> deal(PageRequest pr, Key key, @Valid Status status) {
         IPage page = new Page(pr.current, pr.size);
+        String lastDay = stock2024Service.lastDay();
         IPage<StockStrategyDeal> iPage = stockStrategyDealService.page(page, Wrappers.<StockStrategyDeal>lambdaQuery()
                 .and(BoolUtil.notEmpty(key.uniqueKey), wrapper -> wrapper
                         .like(StockStrategyDeal::getName, key.uniqueKey)
@@ -86,19 +89,22 @@ public class StrategyController {
                         .like(StockStrategyDeal::getCode, key.uniqueKey)
                 )
                 .and(BoolUtil.notNull(status.status), wrapper -> wrapper
-                        .or(w -> w.eq(StockStrategyDeal::getDate, TimeUtil.getCurrentDatetime(XTime.DAY_NONE)).eq(StockStrategyDeal::getSold, false))
-                        .or(w -> w.eq(StockStrategyDeal::getCurrentDate, TimeUtil.getCurrentDatetime(XTime.DAY_NONE)).eq(StockStrategyDeal::getSold, true))
+                        .or(w -> w.eq(StockStrategyDeal::getDate, lastDay).eq(StockStrategyDeal::getSold, false))
+                        .or(w -> w.eq(StockStrategyDeal::getCurrentDate, lastDay).eq(StockStrategyDeal::getSold, true))
                 )
                 .eq(BoolUtil.notNull(status.status), StockStrategyDeal::getSold, status.status)
                 .eq(StockStrategyDeal::getStrategyId, status.id)
+                .orderByDesc(StockStrategyDeal::getDate)
         );
-        List<ListStrategyDealVo> vos = iPage.getRecords().stream().map(this::toListStrategyDeal).collect(Collectors.toList());
+        List<ListStrategyDealVo> vos = iPage.getRecords().stream().map(x -> toListStrategyDeal(x, lastDay)).collect(Collectors.toList());
         return R.OK.newly(PageResponse.of(pr, iPage.getTotal(), vos));
     }
 
-    private ListStrategyDealVo toListStrategyDeal(StockStrategyDeal sd) {
+    private ListStrategyDealVo toListStrategyDeal(StockStrategyDeal sd, String lastDay) {
         ListStrategyDealVo vo = BeanUtil.convert(sd, ListStrategyDealVo.class);
         vo.setDiffPrice(BigDecimalUtil.subtract(sd.getCurrentPrice(), sd.getPrice()));
+        QuickUtil.isTrue(sd.getSold(), () -> vo.setSoldCn("卖出"));
+        QuickUtil.isTrue(!sd.getSold() && BoolUtil.eq(lastDay, sd.getDate()), () -> vo.setSoldCn("买入"));
         return vo;
     }
 

@@ -39,6 +39,10 @@
         date, code, name, current_price, previous_close, open_price, highest_price, lowest_price, avg_price, upper_price, lower_price, volume, turnover, sell_volume, buy_volume, tc_ratio, pe_ratio, pb_ratio, dy_ratio, amplitude, volume_ratio, turnover_rate, rise_rate, mc_total, mc_circulate, top_year, bottom_year, timestamp
     </sql>
 
+    <select id="lastDay" resultType="java.lang.String">
+        select `date` from stock_2024 order by `date` desc limit 1
+    </select>
+
     <insert id="insertOrUpdateBatch">
         INSERT INTO stock_2024 (
         `date`, `code`, `name`, `current_price`, `previous_close`,
