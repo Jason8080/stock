@@ -86,8 +86,10 @@ public class StockController {
                 .orderByAsc(StockStrategy::getId, StockStrategy::getV)
         );
         // 策略规则准备
+        List<Integer> strategyIds = iPage.getRecords().stream().map(StockStrategy::getId).collect(Collectors.toList());
+        strategyIds.add(-1); // 确保没有异常
         List<StockStrategyRule> rules = stockStrategyRuleService.list(Wrappers.<StockStrategyRule>lambdaQuery()
-                .in(StockStrategyRule::getStrategyId, iPage.getRecords().stream().map(StockStrategy::getId).collect(Collectors.toList()))
+                .in(StockStrategyRule::getStrategyId, strategyIds)
                 .eq(StockStrategyRule::getStatus, true)
         );
         Map<Integer, List<StockStrategyRule>> ruleMap = rules.stream().collect(Collectors.groupingBy(StockStrategyRule::getStrategyId));
@@ -95,7 +97,7 @@ public class StockController {
         List<Stock> stocks = TencentKit.getStocks(MarketKit.getMarket(code.code).concat(code.code));
         // 持仓数据准备
         List<StockStrategyDeal> deals = stockStrategyDealService.list(Wrappers.<StockStrategyDeal>lambdaQuery()
-                .in(StockStrategyDeal::getStrategyId, iPage.getRecords().stream().map(StockStrategy::getId).collect(Collectors.toList()))
+                .in(StockStrategyDeal::getStrategyId, strategyIds)
                 .eq(StockStrategyDeal::getSold, false)
                 .orderByAsc(StockStrategyDeal::getDate)
         );
