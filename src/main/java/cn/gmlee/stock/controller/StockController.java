@@ -1,7 +1,7 @@
 package cn.gmlee.stock.controller;
 
-import cn.gmlee.stock.mod.Deal;
 import cn.gmlee.stock.dao.entity.*;
+import cn.gmlee.stock.mod.Deal;
 import cn.gmlee.stock.mod.Stock;
 import cn.gmlee.stock.service.*;
 import cn.gmlee.stock.util.DealKit;
@@ -55,16 +55,14 @@ public class StockController {
     @GetMapping("list")
     public R<PageResponse> list(PageRequest pr, Key key) {
         IPage page = new Page(pr.current, pr.size);
-        Stock2024 date = stock2024Service.getOne(Wrappers.<Stock2024>lambdaQuery()
-                .select(Stock2024::getDate)
-                .orderByDesc(Stock2024::getDate), false);
+        String lastDay = stock2024Service.lastDay();
         IPage<Stock2024> iPage = stock2024Service.page(page, Wrappers.<Stock2024>lambdaQuery()
                 .and(BoolUtil.notEmpty(key.uniqueKey), wrapper -> wrapper
                         .like(Stock2024::getName, key.uniqueKey)
                         .or()
                         .like(Stock2024::getCode, key.uniqueKey)
                 )
-                .eq(Stock2024::getDate, date.getDate())
+                .eq(Stock2024::getDate, lastDay)
         );
         return R.OK.newly(PageResponse.of(pr, iPage.getTotal(), iPage.getRecords()));
     }
@@ -85,6 +83,7 @@ public class StockController {
                         .like(StockStrategy::getAuthor, key.uniqueKey)
                 )
                 .eq(StockStrategy::getStatus, 1)
+                .orderByAsc(StockStrategy::getId, StockStrategy::getV)
         );
         // 策略规则准备
         List<StockStrategyRule> rules = stockStrategyRuleService.list(Wrappers.<StockStrategyRule>lambdaQuery()
