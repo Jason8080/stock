@@ -76,16 +76,24 @@ public class DealController {
                 .orderByAsc(StockStrategyDeal::getDate)
         );
         Map<Integer, List<StockStrategyDeal>> dealsMap = deals.stream().collect(Collectors.groupingBy(StockStrategyDeal::getStrategyId));
+        // 当日卖出
+        List<StockStrategyDeal> sells = stockStrategyDealService.list(Wrappers.<StockStrategyDeal>lambdaQuery()
+                .in(StockStrategyDeal::getStrategyId, strategyIds)
+                .eq(StockStrategyDeal::getSold, true)
+                .eq(StockStrategyDeal::getCurrentDate, TimeUtil.getCurrentDatetime(XTime.DAY_NONE))
+                .orderByAsc(StockStrategyDeal::getDate)
+        );
+        Map<Integer, List<StockStrategyDeal>> sellsMap = sells.stream().collect(Collectors.groupingBy(StockStrategyDeal::getStrategyId));
         // 信号收集
-        return R.OK.newly(collectSignal(stocks, strategies, ruleMap, dealsMap));
+        return R.OK.newly(collectSignal(stocks, strategies, ruleMap, dealsMap, sellsMap));
     }
 
-    private List<ViewStockDealVo> collectSignal(List<Stock> stocks, List<StockStrategy> strategies, Map<Integer, List<StockStrategyRule>> ruleMap, Map<Integer, List<StockStrategyDeal>> dealsMap) {
+    private List<ViewStockDealVo> collectSignal(List<Stock> stocks, List<StockStrategy> strategies, Map<Integer, List<StockStrategyRule>> ruleMap, Map<Integer, List<StockStrategyDeal>> dealsMap, Map<Integer, List<StockStrategyDeal>> sellsMap) {
         List<ViewStockDealVo> vos = new ArrayList<>();
         for (Stock stock : stocks) {
             ViewStockDealVo vo = BeanUtil.convert(stock, ViewStockDealVo.class);
             for (StockStrategy strategy : strategies) {
-                Deal deal = DealKit.toDeal(strategy, ruleMap, dealsMap, null, null, stock);
+                Deal deal = DealKit.toDeal(strategy, ruleMap, dealsMap, sellsMap, null, null, stock);
                 deal.setStock(null);
                 if (deal.getSold() == null) {
                     vo.getLook().add(deal);

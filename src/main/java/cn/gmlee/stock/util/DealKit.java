@@ -9,6 +9,7 @@ import cn.gmlee.stock.mod.Stock;
 import cn.gmlee.tools.base.util.BeanUtil;
 import cn.gmlee.tools.base.util.QuickUtil;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -25,6 +26,7 @@ public class DealKit {
      * @param strategy     the strategy
      * @param ruleMap      the rule map
      * @param dealsMap     the deals map
+     * @param sellsMap
      * @param soldStatsMap the sold stats map
      * @param lockStatsMap the lock stats map
      * @param stock        the stock
@@ -33,6 +35,7 @@ public class DealKit {
     public static Deal toDeal(StockStrategy strategy,
                               Map<Integer, List<StockStrategyRule>> ruleMap,
                               Map<Integer, List<StockStrategyDeal>> dealsMap,
+                              Map<Integer, List<StockStrategyDeal>> sellsMap,
                               Map<Integer, StockStats> soldStatsMap,
                               Map<Integer, StockStats> lockStatsMap,
                               Stock stock) {
@@ -46,7 +49,9 @@ public class DealKit {
         // 交易信号准备
         List<StockStrategyDeal> deals = dealsMap.get(strategy.getId());
         Map<String, StockStrategyDeal> dealMap = deals.stream().collect(Collectors.toMap(StockStrategyDeal::getCode, Function.identity(), (k1, k2) -> k1));
-        vo.setSold(SoldKit.sold(stock, dealMap, groupMap));
+        List<StockStrategyDeal> sells = sellsMap != null ? sellsMap.get(strategy.getId()) : Collections.emptyList();
+        Map<String, StockStrategyDeal> sellMap = sells.stream().collect(Collectors.toMap(StockStrategyDeal::getCode, Function.identity(), (k1, k2) -> k1));
+        vo.setSold(SoldKit.sold(stock, dealMap, sellMap, groupMap));
         QuickUtil.notNull(vo.getSold(), x -> vo.setColor(x ? "green" : "red"));
         QuickUtil.notNull(vo.getSold(), x -> vo.setSoldCn(x ? "卖出" : "买入"));
         return vo;

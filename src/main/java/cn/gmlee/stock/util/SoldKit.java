@@ -22,10 +22,11 @@ public class SoldKit {
      *
      * @param stock                 the stock
      * @param dealMap               the deal map
+     * @param sellMap
      * @param groupTransTypeRuleMap the group trans type rule map
      * @return the boolean
      */
-    public static Boolean sold(Stock stock, Map<String, StockStrategyDeal> dealMap, Map<Integer, List<StockStrategyRule>> groupTransTypeRuleMap) {
+    public static Boolean sold(Stock stock, Map<String, StockStrategyDeal> dealMap, Map<String, StockStrategyDeal> sellMap, Map<Integer, List<StockStrategyRule>> groupTransTypeRuleMap) {
         Map<String, Object> stockMap = ClassUtil.generateCurrentMap(stock);
         CustomVariableKit.add(stock, stockMap); // 添加自定义变量
         StockStrategyDeal deal = dealMap.get(stock.getCode());// 可能没有持仓: null
@@ -45,7 +46,7 @@ public class SoldKit {
         if (deal == null && buy) {
             return false;// 买入
         }
-        if (deal != null && (sell && !stop)) {
+        if (sellMap.containsKey(stock.getCode()) || (deal != null && (sell && !stop))) {
             return true;// 卖出
         }
         return null;

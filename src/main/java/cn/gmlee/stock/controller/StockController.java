@@ -110,7 +110,7 @@ public class StockController {
         List<StockStats> lockStats = stockStatsService.stats(null, null, false, iPage.getRecords().stream().map(StockStrategy::getId).toArray(Integer[]::new));
         Map<Integer, StockStats> soldStatsMap = soldStats.stream().collect(Collectors.toMap(StockStats::getStrategyId, Function.identity(), (k1, k2) -> k1));
         Map<Integer, StockStats> lockStatsMap = lockStats.stream().collect(Collectors.toMap(StockStats::getStrategyId, Function.identity(), (k1, k2) -> k1));
-        List<Deal> vos = iPage.getRecords().stream().map(x -> DealKit.toDeal(x, ruleMap, dealsMap, soldStatsMap, lockStatsMap, stock)).collect(Collectors.toList());
+        List<Deal> vos = iPage.getRecords().stream().map(x -> DealKit.toDeal(x, ruleMap, dealsMap, null, soldStatsMap, lockStatsMap, stock)).collect(Collectors.toList());
         return R.OK.newly(PageResponse.of(pr, iPage.getTotal(), vos));
     }
 
