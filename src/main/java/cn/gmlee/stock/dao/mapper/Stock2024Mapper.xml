@@ -43,6 +43,10 @@
         select `date` from stock_2024 order by `date` desc limit 1
     </select>
 
+    <select id="lastByCode" resultType="cn.gmlee.stock.dao.entity.Stock2024">
+        select <include refid="Base_Column_List"/> from stock_2024 where code = #{code} order by `date` desc limit 1
+    </select>
+
     <insert id="insertOrUpdateBatch">
         INSERT INTO stock_2024 (
         `date`, `code`, `name`, `current_price`, `previous_close`,

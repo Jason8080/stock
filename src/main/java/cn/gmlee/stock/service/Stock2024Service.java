@@ -22,6 +22,14 @@ public interface Stock2024Service extends IService<Stock2024> {
     String lastDay();
 
     /**
+     * Last day stock 2024.
+     *
+     * @param code the code
+     * @return the stock 2024
+     */
+    Stock2024 lastDay(String code);
+
+    /**
      * Insert or update batch.
      *
      * @param entities the entities

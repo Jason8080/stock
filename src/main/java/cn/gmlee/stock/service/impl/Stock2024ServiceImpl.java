@@ -30,6 +30,11 @@ public class Stock2024ServiceImpl extends ServiceImpl<Stock2024Mapper, Stock2024
     }
 
     @Override
+    public Stock2024 lastDay(String code) {
+        return baseMapper.lastByCode(code);
+    }
+
+    @Override
     public void insertOrUpdateBatch(List<Stock2024> entities) {
         if (BoolUtil.isEmpty(entities)) {
             return;

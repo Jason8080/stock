@@ -96,11 +96,7 @@ public class StockController {
         );
         Map<Integer, List<StockStrategyRule>> ruleMap = rules.stream().collect(Collectors.groupingBy(StockStrategyRule::getStrategyId));
         // 行情数据准备
-        Stock2024 stock2024 = stock2024Service.getOne(Wrappers.<Stock2024>lambdaQuery()
-                .eq(Stock2024::getCode, code.code)
-                .orderByDesc(Stock2024::getDate)
-                .groupBy(Stock2024::getCode)
-        , false);
+        Stock2024 stock2024 = stock2024Service.lastDay(code.code);
         Stock stock = stockToStockYear.toObject(stock2024);
         // 持仓数据准备
         List<StockStrategyDeal> deals = stockStrategyDealService.list(Wrappers.<StockStrategyDeal>lambdaQuery()

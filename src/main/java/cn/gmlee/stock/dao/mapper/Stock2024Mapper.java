@@ -23,6 +23,14 @@ public interface Stock2024Mapper extends BaseMapper<Stock2024> {
     String lastDay();
 
     /**
+     * Last day stock 2024.
+     *
+     * @param code the code
+     * @return the stock 2024
+     */
+    Stock2024 lastByCode(@Param("code") String code);
+
+    /**
      * Insert or update batch.
      *
      * @param entities the entities
