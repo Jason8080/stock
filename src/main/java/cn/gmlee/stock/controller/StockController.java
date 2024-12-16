@@ -64,7 +64,7 @@ public class StockController {
                         .like(Stock2024::getCode, key.uniqueKey)
                 )
                 .eq(Stock2024::getDate, lastDay)
-                .orderByAsc(Stock2024::getCurrentPrice)
+                .orderByDesc(Stock2024::getCurrentPrice)
         );
         return R.OK.newly(PageResponse.of(pr, iPage.getTotal(), iPage.getRecords()));
     }

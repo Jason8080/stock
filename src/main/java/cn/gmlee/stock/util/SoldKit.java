@@ -43,10 +43,10 @@ public class SoldKit {
         boolean sell = isDeal(stockMap, sellRule, excludeSellRule);
         boolean stop = isDeal(stockMap, stopRule, excludeStopRule);
         if (deal == null && buy) {
-            return true;// 买入
+            return false;// 买入
         }
         if (deal != null && (sell && !stop)) {
-            return false;// 卖出
+            return true;// 卖出
         }
         return null;
     }

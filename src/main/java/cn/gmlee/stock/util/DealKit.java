@@ -47,8 +47,8 @@ public class DealKit {
         List<StockStrategyDeal> deals = dealsMap.get(strategy.getId());
         Map<String, StockStrategyDeal> dealMap = deals.stream().collect(Collectors.toMap(StockStrategyDeal::getCode, Function.identity(), (k1, k2) -> k1));
         vo.setSold(SoldKit.sold(stock, dealMap, groupMap));
-        QuickUtil.notNull(vo.getSold(), x -> vo.setColor(x ? "red" : "green"));
-        QuickUtil.notNull(vo.getSold(), x -> vo.setSoldCn(x ? "买入" : "卖出"));
+        QuickUtil.notNull(vo.getSold(), x -> vo.setColor(x ? "green" : "red"));
+        QuickUtil.notNull(vo.getSold(), x -> vo.setSoldCn(x ? "卖出" : "买入"));
         return vo;
     }
 }
