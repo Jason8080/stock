@@ -13,8 +13,10 @@ import cn.gmlee.stock.service.StockStrategyService;
 import cn.gmlee.stock.util.DealKit;
 import cn.gmlee.stock.util.MarketKit;
 import cn.gmlee.stock.util.TencentKit;
+import cn.gmlee.tools.base.enums.XTime;
 import cn.gmlee.tools.base.mod.R;
 import cn.gmlee.tools.base.util.BeanUtil;
+import cn.gmlee.tools.base.util.TimeUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,6 +72,7 @@ public class DealController {
         List<StockStrategyDeal> deals = stockStrategyDealService.list(Wrappers.<StockStrategyDeal>lambdaQuery()
                 .in(StockStrategyDeal::getStrategyId, strategyIds)
                 .eq(StockStrategyDeal::getSold, false)
+                .lt(StockStrategyDeal::getDate, TimeUtil.getCurrentDatetime(XTime.DAY_NONE))
                 .orderByAsc(StockStrategyDeal::getDate)
         );
         Map<Integer, List<StockStrategyDeal>> dealsMap = deals.stream().collect(Collectors.groupingBy(StockStrategyDeal::getStrategyId));
