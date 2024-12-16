@@ -46,7 +46,7 @@ public class StockTaskAutoConfiguration {
     /**
      * 策略统计处理
      */
-    @Scheduled(cron = "0 0 20 ? * 1-5")
+    @Scheduled(cron = "0 0 17 ? * 1-5")
     public void statsHandle() {
         if (BoolUtil.notEmpty(db)) {
             log.warn("当前持久化采用的是: {}", db);
@@ -58,7 +58,7 @@ public class StockTaskAutoConfiguration {
     /**
      * 交易策略处理
      */
-    @Scheduled(cron = "0 0 18 ? * 1-5")
+    @Scheduled(cron = "0 5 15 ? * 1-5")
     public void dealHandle() {
         if (BoolUtil.notEmpty(db)) {
             log.warn("当前持久化采用的是: {}", db);
@@ -70,7 +70,7 @@ public class StockTaskAutoConfiguration {
     /**
      * 行情数据保存
      */
-    @Scheduled(cron = "0 0 17 ? * 1-5")
+    @Scheduled(cron = "30 0 15 ? * 1-5")
     public void marketPull() {
         if (BoolUtil.notEmpty(db)) {
             log.warn("当前持久化采用的是: {}", db);
@@ -94,7 +94,7 @@ public class StockTaskAutoConfiguration {
     /**
      * 群发量化消息
      */
-    @Scheduled(cron = "30 0 15 ? * 1-5")
+//    @Scheduled(cron = "30 0 15 ? * 1-5")
     @Scheduled(cron = "0 50,53,56 14 ? * 1-5")
     public void groupMessage() {
         if (BoolUtil.notEmpty(db)) {
