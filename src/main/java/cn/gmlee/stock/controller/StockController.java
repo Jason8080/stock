@@ -3,10 +3,9 @@ package cn.gmlee.stock.controller;
 import cn.gmlee.stock.dao.entity.*;
 import cn.gmlee.stock.mod.Deal;
 import cn.gmlee.stock.mod.Stock;
+import cn.gmlee.stock.mod.StockToStockYear;
 import cn.gmlee.stock.service.*;
 import cn.gmlee.stock.util.DealKit;
-import cn.gmlee.stock.util.MarketKit;
-import cn.gmlee.stock.util.TencentKit;
 import cn.gmlee.tools.base.entity.Code;
 import cn.gmlee.tools.base.entity.Key;
 import cn.gmlee.tools.base.mod.PageRequest;
@@ -34,6 +33,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("stock")
 public class StockController {
+
+    private final StockToStockYear stockToStockYear;
 
     private final StockStatsService stockStatsService;
 
@@ -63,6 +64,7 @@ public class StockController {
                         .like(Stock2024::getCode, key.uniqueKey)
                 )
                 .eq(Stock2024::getDate, lastDay)
+                .orderByAsc(Stock2024::getCurrentPrice)
         );
         return R.OK.newly(PageResponse.of(pr, iPage.getTotal(), iPage.getRecords()));
     }
@@ -94,7 +96,12 @@ public class StockController {
         );
         Map<Integer, List<StockStrategyRule>> ruleMap = rules.stream().collect(Collectors.groupingBy(StockStrategyRule::getStrategyId));
         // 行情数据准备
-        List<Stock> stocks = TencentKit.getStocks(MarketKit.getMarket(code.code).concat(code.code));
+        Stock2024 stock2024 = stock2024Service.getOne(Wrappers.<Stock2024>lambdaQuery()
+                .eq(Stock2024::getCode, code.code)
+                .orderByDesc(Stock2024::getDate)
+                .groupBy(Stock2024::getCode)
+        , false);
+        Stock stock = stockToStockYear.toObject(stock2024);
         // 持仓数据准备
         List<StockStrategyDeal> deals = stockStrategyDealService.list(Wrappers.<StockStrategyDeal>lambdaQuery()
                 .in(StockStrategyDeal::getStrategyId, strategyIds)
@@ -107,7 +114,7 @@ public class StockController {
         List<StockStats> lockStats = stockStatsService.stats(null, null, false, iPage.getRecords().stream().map(StockStrategy::getId).toArray(Integer[]::new));
         Map<Integer, StockStats> soldStatsMap = soldStats.stream().collect(Collectors.toMap(StockStats::getStrategyId, Function.identity(), (k1, k2) -> k1));
         Map<Integer, StockStats> lockStatsMap = lockStats.stream().collect(Collectors.toMap(StockStats::getStrategyId, Function.identity(), (k1, k2) -> k1));
-        List<Deal> vos = iPage.getRecords().stream().map(x -> DealKit.toDeal(x, ruleMap, dealsMap, soldStatsMap, lockStatsMap, stocks.get(0))).collect(Collectors.toList());
+        List<Deal> vos = iPage.getRecords().stream().map(x -> DealKit.toDeal(x, ruleMap, dealsMap, soldStatsMap, lockStatsMap, stock)).collect(Collectors.toList());
         return R.OK.newly(PageResponse.of(pr, iPage.getTotal(), vos));
     }
 
