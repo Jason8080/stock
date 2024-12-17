@@ -7,6 +7,7 @@ import cn.gmlee.stock.dao.entity.StockStrategyRule;
 import cn.gmlee.stock.mod.Deal;
 import cn.gmlee.stock.mod.Stock;
 import cn.gmlee.tools.base.util.BeanUtil;
+import cn.gmlee.tools.base.util.BoolUtil;
 import cn.gmlee.tools.base.util.QuickUtil;
 
 import java.util.Collections;
@@ -49,11 +50,20 @@ public class DealKit {
         // 交易信号准备
         List<StockStrategyDeal> deals = dealsMap.get(strategy.getId());
         Map<String, StockStrategyDeal> dealMap = deals.stream().collect(Collectors.toMap(StockStrategyDeal::getCode, Function.identity(), (k1, k2) -> k1));
-        List<StockStrategyDeal> sells = sellsMap != null ? sellsMap.get(strategy.getId()) : Collections.emptyList();
-        Map<String, StockStrategyDeal> sellMap = sells.stream().collect(Collectors.toMap(StockStrategyDeal::getCode, Function.identity(), (k1, k2) -> k1));
-        vo.setSold(SoldKit.sold(stock, dealMap, sellMap, groupMap));
+        vo.setSold(SoldKit.sold(stock, dealMap, getSellMap(strategy, sellsMap), groupMap));
         QuickUtil.notNull(vo.getSold(), x -> vo.setColor(x ? "green" : "red"));
         QuickUtil.notNull(vo.getSold(), x -> vo.setSoldCn(x ? "卖出" : "买入"));
         return vo;
+    }
+
+    private static Map<String, StockStrategyDeal> getSellMap(StockStrategy strategy, Map<Integer, List<StockStrategyDeal>> sellsMap) {
+        if (BoolUtil.isEmpty(sellsMap)) {
+            return Collections.EMPTY_MAP;
+        }
+        List<StockStrategyDeal> sells = sellsMap.get(strategy.getId());
+        Map<String, StockStrategyDeal> sellMap = sells.stream().collect(
+                Collectors.toMap(StockStrategyDeal::getCode, Function.identity(), (k1, k2) -> k1)
+        );
+        return sellMap;
     }
 }
