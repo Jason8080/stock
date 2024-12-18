@@ -46,7 +46,7 @@ public class SoldKit {
         if (deal == null && buy) {
             return false;// 买入
         }
-        if (sellMap.containsKey(stock.getCode()) || (deal != null && (sell && !stop))) {
+        if (sellMap.containsKey(stock.getCode()) || (deal != null && (sell || stop))) {
             return true;// 卖出
         }
         return null;
