@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -82,7 +83,8 @@ public class FeiShuSender {
         Template template = new Template();
         Variable variable = template.getData();
         variable.setTemplate_id("AAqjjVphSBXwR");//群聊模版
-        List<List<Map>> rows = PageUtil.splitSize(maps, 4);
+        List<Map> target = maps.size() > 200 ? maps.stream().filter(m -> "green".equals(m.get("color"))).collect(Collectors.toList()) : maps;
+        List<List<Map>> rows = PageUtil.splitSize(target, 4);
         List<Map> list = new ArrayList<>();
         map.put("list", list);
         for (int i = 0; i < rows.size(); i++) {
