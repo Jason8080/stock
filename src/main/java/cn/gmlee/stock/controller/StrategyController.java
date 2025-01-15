@@ -113,9 +113,7 @@ public class StrategyController {
         ListStrategyVo.Props props = new ListStrategyVo.Props();
         List<StockStats> soldStats = stockStatsService.stats(null, null, true, ss.getId());
         List<StockStats> lockStats = stockStatsService.stats(null, null, false, ss.getId());
-        BigDecimal sumRate = BigDecimal.ZERO;
-        BigDecimal sumAvgRate = BigDecimal.ZERO;
-        BigDecimal winRate = BigDecimal.ZERO;
+        List<StockStats> fullStats = stockStatsService.stats(null, null, null, ss.getId());
         if (BoolUtil.notEmpty(soldStats)) {
             StockStats stockStats = soldStats.get(0);
             props.setTotal(stockStats.getTotal());
@@ -123,22 +121,17 @@ public class StrategyController {
             props.setRate(stockStats.getRate());
             props.setAvgRate(stockStats.getAvgRate());
             props.setSoldStats(stockStats);
-            sumRate = sumRate.add(stockStats.getRate());
-            sumAvgRate = sumAvgRate.add(stockStats.getAvgRate());
-            winRate = winRate.add(stockStats.getWinRate());
         }
         if (BoolUtil.notEmpty(lockStats)) {
             StockStats stockStats = lockStats.get(0);
             props.setLock(stockStats.getQty());
             props.setLockStats(stockStats);
-            sumRate = sumRate.add(stockStats.getRate());
-            sumAvgRate = sumAvgRate.add(stockStats.getAvgRate());
-            winRate = winRate.add(stockStats.getWinRate());
         }
-        props.setRate(sumRate);
-        props.setProportion(BigDecimal.valueOf(100));
-        props.setAvgRate(BigDecimalUtil.divide(sumAvgRate, 2).setScale(2, RoundingMode.HALF_UP));
-        props.setWinRate(BigDecimalUtil.divide(winRate, 2).setScale(2, RoundingMode.HALF_UP));
+        StockStats stockStats = fullStats.get(0);
+        props.setRate(stockStats.getRate());
+        props.setProportion(stockStats.getProportion());
+        props.setAvgRate(stockStats.getAvgRate());
+        props.setWinRate(stockStats.getWinRate());
         vo.setProps(props);
         return vo;
     }
