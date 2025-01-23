@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  * The type Strategy server.
  */
 @Component
+@Slf4j
 @SuppressWarnings("all")
 @RequiredArgsConstructor
 public class StrategyServer {
@@ -46,6 +48,7 @@ public class StrategyServer {
      * @return boolean
      */
     public boolean dealHandle() {
+        log.debug("deal handle start...");
         // 策略数据准备
         List<StockStrategy> list = stockStrategyService.list(Wrappers.<StockStrategy>lambdaQuery()
                 .eq(BoolUtil.notEmpty(ConsoleKit.getStrategyId()), StockStrategy::getId, ConsoleKit.getStrategyId())
@@ -67,6 +70,7 @@ public class StrategyServer {
         }
         // 单个策略处理
         strategyMap.forEach((k, v) -> ExceptionUtil.sandbox(() -> strategyHandlerOne(v, ruleMap)));
+        log.debug("deal handle end...");
         return true;
     }
 
@@ -343,6 +347,7 @@ public class StrategyServer {
     }
 
     public boolean groupMessage() {
+        log.debug("group message start...");
         // 策略数据准备
         List<StockStrategy> list = stockStrategyService.list(Wrappers.<StockStrategy>lambdaQuery()
                 .eq(BoolUtil.notEmpty(ConsoleKit.getStrategyId()), StockStrategy::getId, ConsoleKit.getStrategyId())
@@ -364,6 +369,7 @@ public class StrategyServer {
         List<Stock> stocks = lists.stream().flatMap(List::stream).collect(Collectors.toList());
         // 单个策略处理
         list.forEach(strategy -> ExceptionUtil.sandbox(() -> strategyHandlerOne(strategy, ruleMap, stocks)));
+        log.debug("group message end...");
         return true;
     }
 
