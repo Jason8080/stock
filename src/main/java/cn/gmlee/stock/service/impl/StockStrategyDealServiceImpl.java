@@ -27,4 +27,9 @@ public class StockStrategyDealServiceImpl extends ServiceImpl<StockStrategyDealM
         }
         baseMapper.insertOrUpdateBatch(entities);
     }
+
+    @Override
+    public String lastDay() {
+        return baseMapper.lastDay();
+    }
 }

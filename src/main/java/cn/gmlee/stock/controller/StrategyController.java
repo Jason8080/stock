@@ -5,7 +5,6 @@ import cn.gmlee.stock.controller.vo.ListStrategyVo;
 import cn.gmlee.stock.dao.entity.StockStats;
 import cn.gmlee.stock.dao.entity.StockStrategy;
 import cn.gmlee.stock.dao.entity.StockStrategyDeal;
-import cn.gmlee.stock.service.Stock2024Service;
 import cn.gmlee.stock.service.StockStatsService;
 import cn.gmlee.stock.service.StockStrategyDealService;
 import cn.gmlee.stock.service.StockStrategyService;
@@ -27,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,8 +36,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("strategy")
 public class StrategyController {
-
-    private final Stock2024Service stock2024Service;
 
     private final StockStatsService stockStatsService;
 
@@ -81,7 +76,7 @@ public class StrategyController {
     @GetMapping("deal")
     public R<PageResponse> deal(PageRequest pr, Key key, @Valid Status status) {
         IPage page = new Page(pr.current, pr.size);
-        String lastDay = stock2024Service.lastDay();
+        String lastDay = stockStrategyDealService.lastDay();
         IPage<StockStrategyDeal> iPage = stockStrategyDealService.page(page, Wrappers.<StockStrategyDeal>lambdaQuery()
                 .and(BoolUtil.notEmpty(key.uniqueKey), wrapper -> wrapper
                         .like(StockStrategyDeal::getName, key.uniqueKey)

@@ -21,4 +21,11 @@ public interface StockStrategyDealMapper extends BaseMapper<StockStrategyDeal> {
      * @param entities the entities
      */
     void insertOrUpdateBatch(@Param("entities") List<StockStrategyDeal> entities);
+
+    /**
+     * Last day string.
+     *
+     * @return the string
+     */
+    String lastDay();
 }

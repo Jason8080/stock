@@ -20,6 +20,10 @@
         date, code, name, price, current_price, current_date, days, sold, strategy_id
     </sql>
 
+    <select id="lastDay" resultType="java.lang.String">
+        select `current_date` from stock_strategy_deal order by `current_date` desc limit 1
+    </select>
+
     <insert id="insertOrUpdateBatch">
         INSERT INTO stock_strategy_deal (
         `date`, `code`, `name`, `price`, `current_price`,

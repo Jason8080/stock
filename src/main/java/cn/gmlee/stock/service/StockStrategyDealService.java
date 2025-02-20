@@ -20,4 +20,11 @@ public interface StockStrategyDealService extends IService<StockStrategyDeal> {
      * @param dealLis the deal lis
      */
     void insertOrUpdateBatch(List<StockStrategyDeal> dealLis);
+
+    /**
+     * Last day string.
+     *
+     * @return the string
+     */
+    String lastDay();
 }
