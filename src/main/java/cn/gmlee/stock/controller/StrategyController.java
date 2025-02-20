@@ -95,8 +95,8 @@ public class StrategyController {
                 .eq(StockStrategyDeal::getStrategyId, status.id)
                 .orderByAsc(pr.current==1&&!oddBoolean, StockStrategyDeal::getRiseRatio, StockStrategyDeal::getDate)
                 .orderByDesc(pr.current==1&&oddBoolean, StockStrategyDeal::getRiseRatio, StockStrategyDeal::getDate)
-                .orderByAsc(pr.current!=1&&!oddBoolean, StockStrategyDeal::getRiseRatio, StockStrategyDeal::getDate)
-                .orderByDesc(pr.current!=1&&oddBoolean, StockStrategyDeal::getRiseRatio, StockStrategyDeal::getDate)
+                .orderByAsc(pr.current!=1&&oddBoolean, StockStrategyDeal::getRiseRatio, StockStrategyDeal::getDate)
+                .orderByDesc(pr.current!=1&&!oddBoolean, StockStrategyDeal::getRiseRatio, StockStrategyDeal::getDate)
         );
         List<ListStrategyDealVo> vos = iPage.getRecords().stream().map(x -> toListStrategyDeal(x, lastDay)).collect(Collectors.toList());
         return R.OK.newly(PageResponse.of(pr, iPage.getTotal(), vos));
