@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +37,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("strategy")
 public class StrategyController {
+
+    private AtomicBoolean odd = new AtomicBoolean(true);
 
     private final StockStatsService stockStatsService;
 
@@ -77,6 +80,7 @@ public class StrategyController {
     public R<PageResponse> deal(PageRequest pr, Key key, @Valid Status status) {
         IPage page = new Page(pr.current, pr.size);
         String lastDay = stockStrategyDealService.lastDay();
+        boolean oddBoolean = odd.getAndSet(!odd.get());
         IPage<StockStrategyDeal> iPage = stockStrategyDealService.page(page, Wrappers.<StockStrategyDeal>lambdaQuery()
                 .and(BoolUtil.notEmpty(key.uniqueKey), wrapper -> wrapper
                         .like(StockStrategyDeal::getName, key.uniqueKey)
@@ -89,7 +93,8 @@ public class StrategyController {
                 )
                 .eq(BoolUtil.notNull(status.status), StockStrategyDeal::getSold, status.status)
                 .eq(StockStrategyDeal::getStrategyId, status.id)
-                .orderByDesc(StockStrategyDeal::getRiseRatio, StockStrategyDeal::getDate)
+                .orderByAsc(pr.current==1&&!oddBoolean, StockStrategyDeal::getDate, StockStrategyDeal::getRiseRatio)
+                .orderByDesc(pr.current==1&&oddBoolean, StockStrategyDeal::getRiseRatio, StockStrategyDeal::getDate)
         );
         List<ListStrategyDealVo> vos = iPage.getRecords().stream().map(x -> toListStrategyDeal(x, lastDay)).collect(Collectors.toList());
         return R.OK.newly(PageResponse.of(pr, iPage.getTotal(), vos));
