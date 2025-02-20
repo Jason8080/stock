@@ -21,7 +21,13 @@
     </sql>
 
     <select id="lastDay" resultType="java.lang.String">
-        select `current_date` from stock_strategy_deal order by `current_date` desc limit 1
+        select `current_date` from stock_strategy_deal
+        <where>
+            <if test="strategyId!=null">
+                and strategy_id = #{strategyId}
+            </if>
+        </where>
+        order by `current_date` desc limit 1
     </select>
 
     <insert id="insertOrUpdateBatch">

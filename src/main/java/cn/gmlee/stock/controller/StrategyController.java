@@ -79,7 +79,7 @@ public class StrategyController {
     @GetMapping("deal")
     public R<PageResponse> deal(PageRequest pr, Key key, @Valid Status status) {
         IPage page = new Page(pr.current, pr.size);
-        String lastDay = stockStrategyDealService.lastDay();
+        String lastDay = stockStrategyDealService.lastDay(status.id);
         boolean oddBoolean = odd.getAndSet(!odd.get());
         IPage<StockStrategyDeal> iPage = stockStrategyDealService.page(page, Wrappers.<StockStrategyDeal>lambdaQuery()
                 .and(BoolUtil.notEmpty(key.uniqueKey), wrapper -> wrapper

@@ -29,7 +29,7 @@ public class StockStrategyDealServiceImpl extends ServiceImpl<StockStrategyDealM
     }
 
     @Override
-    public String lastDay() {
-        return baseMapper.lastDay();
+    public String lastDay(Long strategyId) {
+        return baseMapper.lastDay(strategyId);
     }
 }

@@ -25,7 +25,8 @@ public interface StockStrategyDealMapper extends BaseMapper<StockStrategyDeal> {
     /**
      * Last day string.
      *
+     * @param strategyId the strategy id
      * @return the string
      */
-    String lastDay();
+    String lastDay(@Param("strategyId") Long strategyId);
 }
