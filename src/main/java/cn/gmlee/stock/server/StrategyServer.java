@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -47,6 +48,7 @@ public class StrategyServer {
      *
      * @return boolean
      */
+    @Async
     public boolean dealHandle() {
         log.debug("deal handle start...");
         // 策略数据准备

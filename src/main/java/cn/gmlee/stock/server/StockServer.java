@@ -14,6 +14,7 @@ import cn.gmlee.tools.base.util.QuickUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.time.temporal.ChronoUnit;
@@ -52,6 +53,7 @@ public class StockServer {
      *
      * @return
      */
+    @Async
     public boolean marketPull() {
         log.debug("market pull start...");
         List<StockList> all = stockListService.list();
