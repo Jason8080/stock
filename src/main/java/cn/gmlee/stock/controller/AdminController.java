@@ -4,10 +4,10 @@ import cn.gmlee.stock.server.StockServer;
 import cn.gmlee.stock.server.StrategyServer;
 import cn.gmlee.stock.service.Stock2024Service;
 import cn.gmlee.tools.base.mod.R;
+import cn.gmlee.tools.base.util.AssertUtil;
+import cn.gmlee.util.ConsoleKit;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 管理接口.
@@ -43,6 +43,23 @@ public class AdminController {
         stockServer.marketPull();
         strategyServer.dealHandle();
         return lastDay();
+    }
+
+    /**
+     * 重置策略交易
+     *
+     * @return r
+     */
+    @GetMapping("reDeal/{id}")
+    public R<String> reDeal(@PathVariable String id, @RequestParam String password) {
+        AssertUtil.eq(password, "123.", "密码错误");
+        ConsoleKit.put(new ConsoleKit.Obj("deal ".concat(id)));
+        try {
+            strategyServer.dealHandle();
+        } finally {
+            ConsoleKit.remove();
+        }
+        return R.OK;
     }
 
 }
