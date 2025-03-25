@@ -240,6 +240,11 @@ public class StrategyServer {
     }
 
     private boolean oneDayHandle(String date, StockStrategy strategy, List<StockStrategyRule> buyRule, List<StockStrategyRule> excludeBuyRule, List<StockStrategyRule> sellRule, List<StockStrategyRule> excludeSellRule, List<StockStrategyRule> stopRule, List<StockStrategyRule> excludeStopRule) {
+        // 清理重复数据
+        stockStrategyDealService.remove(Wrappers.<StockStrategyDeal>lambdaQuery()
+                .eq(StockStrategyDeal::getStrategyId, strategy.getId())
+                .eq(StockStrategyDeal::getCurrentDate, date)
+        );
         // 持仓数据准备
         List<StockStrategyDeal> deals = stockStrategyDealService.list(Wrappers.<StockStrategyDeal>lambdaQuery()
                 .in(StockStrategyDeal::getStrategyId, strategy.getId())
