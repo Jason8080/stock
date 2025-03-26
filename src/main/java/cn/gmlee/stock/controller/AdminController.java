@@ -9,6 +9,8 @@ import cn.gmlee.util.ConsoleKit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 /**
  * 管理接口.
  */
@@ -41,6 +43,9 @@ public class AdminController {
     @GetMapping("lastDeal")
     public R<String> lastDeal() {
         stockServer.marketPull();
+        if(LocalDateTime.now().getHour() > 15){
+            return lastDay();
+        }
         strategyServer.dealHandle();
         return lastDay();
     }

@@ -13,10 +13,7 @@ import cn.gmlee.tools.base.entity.Status;
 import cn.gmlee.tools.base.mod.PageRequest;
 import cn.gmlee.tools.base.mod.PageResponse;
 import cn.gmlee.tools.base.mod.R;
-import cn.gmlee.tools.base.util.BeanUtil;
-import cn.gmlee.tools.base.util.BigDecimalUtil;
-import cn.gmlee.tools.base.util.BoolUtil;
-import cn.gmlee.tools.base.util.QuickUtil;
+import cn.gmlee.tools.base.util.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -129,7 +126,7 @@ public class StrategyController {
             props.setLock(stockStats.getQty());
             props.setLockStats(stockStats);
         }
-        StockStats stockStats = fullStats.get(0);
+        StockStats stockStats = NullUtil.get(fullStats.get(0), StockStats::new);
         props.setRate(stockStats.getRate());
         props.setProportion(stockStats.getProportion());
         props.setAvgRate(stockStats.getAvgRate());
