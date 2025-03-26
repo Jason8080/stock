@@ -7,6 +7,7 @@ import cn.gmlee.util.ConsoleKit;
 import cn.gmlee.util.SysKit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.Scanner;
@@ -14,6 +15,7 @@ import java.util.Scanner;
 /**
  * The type App.
  */
+@EnableAsync
 @EnableScheduling
 @SpringBootApplication(exclude = {
         DruidMonitorAutoConfiguration.class
